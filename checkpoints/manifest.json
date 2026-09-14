@@ -1,0 +1,20 @@
+{
+  "force_control": {
+    "source": "Only_Force_00_B_phase_2_checkpoint_epoch_65.pth",
+    "file": "force_control.pth",
+    "source_bytes": 1770177404,
+    "output_bytes": 590210867,
+    "tensors": 196,
+    "sha256": "0e7e0be25d237582064048a50d94c029e7614dcc2186f77944136f75d2a1b74a",
+    "exact_tensor_equality": true
+  },
+  "force_pose_control": {
+    "source": "CN_300_00_phase_2_checkpoint_epoch_60.pth",
+    "file": "force_pose_control.pth",
+    "source_bytes": 1494899666,
+    "output_bytes": 891837471,
+    "tensors": 302,
+    "sha256": "1ce35efe191611f083f2815e71318f73f940cec187dee001249d364bfbf0541e",
+    "exact_tensor_equality": true
+  }
+}

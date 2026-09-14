@@ -1,0 +1,8 @@
+# Third-party attribution
+
+- SANA / DC-AE: [NVlabs/Sana](https://github.com/NVlabs/Sana), NVIDIA and contributors. The official repository uses Apache-2.0; a copy is in `licenses/SANA-APACHE-2.0.txt`. The transformer modules were recovered from the author's local adaptations of the SANA-style architecture.
+- DiT: [facebookresearch/DiT](https://github.com/facebookresearch/DiT), William Peebles, Saining Xie and contributors. The official code license is CC BY-NC 4.0; its text is in `licenses/DiT-CC-BY-NC-4.0.txt`. Positional/time embeddings and transformer structures in the original workspace reference this lineage. The original local files omit detailed upstream notices; confirm exact provenance before choosing a blanket project license. Do not assume that an Apache license on another dependency removes DiT's restrictions.
+- FeelAnyForce: [amirsh1376/FeelAnyForce](https://huggingface.co/datasets/amirsh1376/FeelAnyForce), dataset card license CC BY 4.0. Example tactile images and dataset derivatives retain this attribution; modifications include background subtraction, resizing, aligned contact masks and reconstructed sample selection.
+- DC-AE weights are fetched separately from [mit-han-lab/dc-ae-f32c32-sana-1.0-diffusers](https://huggingface.co/mit-han-lab/dc-ae-f32c32-sana-1.0-diffusers). PyTorch, diffusers, timm, OpenCV and other installed dependencies retain their respective licenses.
+
+This recovery preserves upstream license texts rather than assigning unsupported ownership or relicensing the historical weights. The maintainer should supply a project LICENSE with verified provenance before public release.

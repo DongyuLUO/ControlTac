@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "controltac"
+version = "0.1.0"
+description = "Force and contact-pose controlled tactile image generation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "torch>=2.4,<3", "torchvision>=0.19,<1", "diffusers>=0.32,<0.39",
+  "timm>=1.0,<1.1", "numpy>=1.24,<3", "opencv-python>=4.8,<5",
+  "einops>=0.7,<1", "huggingface-hub>=0.27,<2", "safetensors>=0.4,<1",
+  "importlib-metadata>=6", "packaging>=23", "termcolor>=2"
+]
+
+[project.scripts]
+controltac-prepare = "controltac.prepare:main"
+controltac-train = "controltac.train:main"
+controltac-infer = "controltac.infer:main"
+
+[tool.setuptools.packages.find]
+include = ["controltac*"]

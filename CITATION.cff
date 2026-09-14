@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use ControlTac, please cite the associated paper."
+title: "ControlTac"
+type: software
+authors:
+  - family-names: Luo
+    given-names: Dongyu
+  - family-names: Yu
+    given-names: Kelin
+  - family-names: Shahidzadeh
+    given-names: Amir-Hossein
+  - family-names: Fermuller
+    given-names: Cornelia
+  - family-names: Aloimonos
+    given-names: Yiannis
+  - family-names: Gao
+    given-names: Ruohan
+preferred-citation:
+  type: article
+  title: "ControlTac: Force- and Position-Controlled Tactile Data Augmentation with a Single Reference Image"
+  authors:
+    - family-names: Luo
+      given-names: Dongyu
+    - family-names: Yu
+      given-names: Kelin
+    - family-names: Shahidzadeh
+      given-names: Amir-Hossein
+    - family-names: Fermuller
+      given-names: Cornelia
+    - family-names: Aloimonos
+      given-names: Yiannis
+    - family-names: Gao
+      given-names: Ruohan
+  year: 2025
+  journal: arXiv
+  url: "https://arxiv.org/abs/2505.20498"

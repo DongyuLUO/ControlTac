@@ -1,0 +1,15 @@
+{
+  "stage": "force_pose",
+  "steps": 75000,
+  "batch_size": 4,
+  "learning_rate": 0.00001,
+  "min_learning_rate": 0.000001,
+  "weight_decay": 0.000001,
+  "max_grad_norm": 1.0,
+  "timesteps": 1000,
+  "seed": 42,
+  "legacy_skip_first_block": false,
+  "manifest": "splits/force_pose_train.csv",
+  "normalization": "splits/normalization.json",
+  "output": "runs/force_pose"
+}
