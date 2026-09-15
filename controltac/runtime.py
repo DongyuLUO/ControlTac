@@ -12,8 +12,8 @@ def read_config(path):
     return json.loads(Path(path).read_text(encoding='utf-8'))
 
 def create_model(config):
-    from .models.force import ForceControlTransformer
-    from .models.force_pose import ForcePoseControlTransformer
+    from .models.force_control import ForceControlTransformer
+    from .models.force_pose_control import ForcePoseControlTransformer
     kwargs = dict(input_size=(10, 8), patch_size=1, in_channels=64,
                   hidden_size=768, depth=12, num_heads=12, mlp_ratio=4,
                   ffn_type='glumbconv', attn_type='linear', use_pe=True, force_norm=False)

@@ -41,12 +41,23 @@ Use the checked-in split CSVs and `normalization.json` for training. They retain
 
 The new validation/test records hold out image, force and pose information. Mask fields can be empty because those poses were excluded from the aligned training masks. Supply independent aligned masks before evaluating mask-conditioned generation on them. New holdouts are not proven unseen data for historical checkpoints.
 
-To reconstruct the selection itself, use `python -m controltac.prepare --data-root /path/to/original/FT --allow-repeated-force-samples`. This requires the original author CSV pool, not just the selected supplement. The seed, source hashes and duplicate counts are in `splits/report.json`. Source rows are CSV record indices plus the header, not physical line numbers, because legacy records can contain embedded newlines.
+To reconstruct the selection itself, use `python -m controltac.prepare --data-root /path/to/source_data --allow-repeated-force-samples`. This requires the original author CSV pool, not just the selected supplement. The seed, source hashes and duplicate counts are in `splits/report.json`. Source rows are CSV record indices plus the header, not physical line numbers, because legacy records can contain embedded newlines.
 
 ## Maintainer packaging
 
+Source data can live in any directory; no `FT` directory name or repository-parent layout is required. The upstream CSV column `FT` means force/torque and is retained only when reading original annotations. Published manifests use the explicit `force` column.
+
+Original checkpoint filenames are also unrestricted:
+
 ```bash
-python tools/package_annotations.py --data-root /path/to/original/FT
+python tools/export_checkpoints.py --force-checkpoint /path/to/original_force_checkpoint.pth --force-pose-checkpoint /path/to/original_force_pose_checkpoint.pth --output checkpoints
+python tools/inspect_weights.py checkpoints/force_control.pth checkpoints/force_pose_control.pth
+python tools/audit_sources.py --source-root /path/to/source_data
+python tools/make_examples.py --source-root /path/to/source_data
+```
+
+```bash
+python tools/package_annotations.py --data-root /path/to/source_data
 ```
 
 Upload the resulting annotation ZIP and the two tensor-only checkpoints to GitHub Releases. The older `tools/package_data.py` remains an optional offline-bundle utility; its 3.12 GB image archive is not part of this publication.

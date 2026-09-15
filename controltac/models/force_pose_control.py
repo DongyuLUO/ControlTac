@@ -7,7 +7,7 @@ import torch.nn as nn
 from torch.nn import Linear, Module, init
 from timm.models.layers import DropPath
 from .modules import DWMlp, GLUMBConv, MBConvPreGLU, Mlp
-from .force import ForceControlTransformer, ForceTransformerBlock,get_2d_sincos_pos_embed
+from .force_control import ForceControlTransformer, ForceTransformerBlock,get_2d_sincos_pos_embed
 from .blocks import (
     Attention,
     FlashAttention,

@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from timm.models.layers import DropPath
 from .modules import DWMlp, GLUMBConv, MBConvPreGLU, Mlp
-from .base import FT
+from .diffusion_transformer import TactileDiffusionTransformer
 from .blocks import (
     Attention,
     FlashAttention,
@@ -125,7 +125,7 @@ class ForceTransformerBlock(nn.Module):
 ####################################################################################################
 #      ForceControlTransformer: Diffusion model with a Transformer backbone supporting non-square input sizes         #
 ####################################################################################################
-class ForceControlTransformer(FT):
+class ForceControlTransformer(TactileDiffusionTransformer):
     """
     Diffusion model with a Transformer backbone.
     """

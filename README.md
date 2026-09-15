@@ -73,7 +73,7 @@ Images are linked after pixel verification, so no second image copy is needed on
 To reconstruct from the original local CSV tree:
 
 ```bash
-python -m controltac.prepare --data-root /path/to/FT
+python -m controltac.prepare --data-root /path/to/source_data
 ```
 
 This fails clearly if there are too few unique images. Only if repeated **force** samples are intended, explicitly add `--allow-repeated-force-samples`. The supplied Thin Cylinder source allocation requires this option for the requested quota. All repetitions are deterministic and recorded; masks and force labels are never invented.
@@ -83,15 +83,15 @@ This fails clearly if there are too few unique images. Only if repeated **force*
 After preparing the manifests, normalization, and data files:
 
 ```bash
-python tools/verify_data.py --data-root /path/to/FT
-python run.py train --data-root /path/to/FT
+python tools/verify_data.py --data-root /path/to/source_data
+python run.py train --data-root /path/to/source_data
 ```
 
 This trains force control first, then initializes force+pose control from the new force weights. To train stages separately:
 
 ```bash
-python -m controltac.train --config configs/force.json --data-root /path/to/FT
-python -m controltac.train --config configs/force_pose.json --data-root /path/to/FT --initialize-from runs/force/model.pth
+python -m controltac.train --config configs/force.json --data-root /path/to/source_data
+python -m controltac.train --config configs/force_pose.json --data-root /path/to/source_data --initialize-from runs/force/model.pth
 ```
 
 Both stages default to 75,000 optimizer steps, batch size 4, AdamW, cosine annealing, and `0.5 L1 + 0.5 MSE` noise-prediction loss. Learning rates are `1e-4 → 1e-5` for force and `1e-5 → 1e-6` for pose, following [Appendix A.1](https://arxiv.org/html/2505.20498v1#A1.SS1). Weight decay and clipping are recovered code choices, not specified by the paper.

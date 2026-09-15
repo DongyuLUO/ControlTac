@@ -137,9 +137,9 @@ class FTBlock(nn.Module):
 
 
 ####################################################################################################
-#      FT: Diffusion model with a Transformer backbone supporting non-square input sizes           #
+#      Tactile diffusion model with a Transformer backbone supporting non-square input sizes           #
 ####################################################################################################
-class FT(nn.Module):
+class TactileDiffusionTransformer(nn.Module):
     def __init__(
         self,
         input_size=(240, 320),

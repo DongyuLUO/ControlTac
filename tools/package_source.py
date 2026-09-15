@@ -17,7 +17,7 @@ with zipfile.ZipFile(out/'ControlTac-source.zip','w',zipfile.ZIP_DEFLATED,compre
 with zipfile.ZipFile(out/'ControlTac-source.zip') as archive:
     assert archive.testzip() is None
 report = {}
-for path in [out/'ControlTac-source.zip',out/'controltac_data.zip',root/'checkpoints/force_control.pth',root/'checkpoints/force_pose_control.pth']:
+for path in [out/'ControlTac-source.zip',out/'controltac_annotations.zip',root/'checkpoints/force_control.pth',root/'checkpoints/force_pose_control.pth']:
     with path.open('rb') as f:
         sha = hashlib.file_digest(f,'sha256').hexdigest()
     report[path.name] = {'bytes':path.stat().st_size,'sha256':sha}

@@ -1,12 +1,16 @@
 """Recover two self-contained, documented inference examples from local sources."""
 import csv
 import json
+import argparse
 import shutil
 from pathlib import Path
 import torch
 
-root = Path(__file__).resolve().parents[2]
-out = root/'ControlTac/examples'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--source-root', type=Path, required=True, help='Directory containing original data_all/ and data/')
+args = parser.parse_args()
+root = args.source_root.resolve()
+out = Path(__file__).resolve().parents[1]/'examples'
 assets = out/'assets'
 assets.mkdir(exist_ok=True)
 rows = list(csv.DictReader((root/'data_all/cross7/cross7_train_pos_300.csv').open(newline='')))

@@ -11,7 +11,7 @@ The original files are untouched. Export strips epoch, optimizer, scheduler and 
 
 The surviving model code and strict checkpoint loading establish 12 backbone blocks, width 768, 12 cross-attention heads, linear self-attention, GLUMBConv feed-forward layers, 64 concatenated latent input channels, and 32 output channels. Images have height 256 and width 320; DC-AE latents have height 8 and width 10. The historical positional-embedding base size `(10, 8)` is retained to preserve checkpoint behavior.
 
-`model/net/FT_MS_F3.py`, `FT_MS_F3_Con.py` and their required modules were migrated into clearly named `controltac/models/` modules. Parameter names remain stable. No unrelated downstream estimators or experiment variants are imported.
+The original force and force-pose transformer implementations were migrated into `controltac/models/force_control.py` and `controltac/models/force_pose_control.py`, with a shared `diffusion_transformer.py` backbone. Parameter names remain stable. No unrelated downstream estimators or experiment variants are imported.
 
 ## Corrections
 

@@ -7,15 +7,16 @@ import torch
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source-root', type=Path, required=True)
+    parser.add_argument('--force-checkpoint', type=Path, required=True)
+    parser.add_argument('--force-pose-checkpoint', type=Path, required=True)
     parser.add_argument('--output', type=Path, default=Path('checkpoints'))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    mapping = {'force_control': 'Only_Force_00_B_phase_2_checkpoint_epoch_65.pth',
-               'force_pose_control': 'CN_300_00_phase_2_checkpoint_epoch_60.pth'}
+    mapping = {'force_control': args.force_checkpoint,
+               'force_pose_control': args.force_pose_checkpoint}
     report = {}
     for name, original in mapping.items():
-        source = args.source_root / original
+        source = original
         obj = torch.load(source, map_location='cpu', weights_only=True, mmap=True)
         state = obj.get('model_state_dict', obj)
         if not all(isinstance(v, torch.Tensor) for v in state.values()):
@@ -28,7 +29,7 @@ def main():
         assert state.keys() == recovered.keys()
         assert all(torch.equal(state[k], recovered[k]) for k in state)
         sha = hashlib.file_digest(destination.open('rb'), 'sha256').hexdigest()
-        report[name] = dict(source=original, file=destination.name, source_bytes=source.stat().st_size,
+        report[name] = dict(source=source.name, file=destination.name, source_bytes=source.stat().st_size,
                             output_bytes=destination.stat().st_size, tensors=len(state), sha256=sha,
                             exact_tensor_equality=True)
         print(json.dumps(report[name]), flush=True)

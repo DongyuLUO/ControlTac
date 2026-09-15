@@ -2,10 +2,14 @@
 import ast
 import csv
 import json
+import argparse
 from pathlib import Path
 from collections import Counter
 
-root = Path(__file__).resolve().parents[2]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--source-root', type=Path, required=True, help='Directory containing original data_all/ and data/')
+args = parser.parse_args()
+root = args.source_root.resolve()
 result = {}
 for obj in ['cross7', 'cylinder7', 'cylinder92', 'cylinder142', 'sphere28', 'triple_cylinder7']:
     for p in sorted((root / 'data_all' / obj).glob('*train*.csv')):

@@ -25,7 +25,7 @@ python run.py infer --stage force_pose
 
 新文件只包含模型参数与模型必要 buffer，不包含 epoch、optimizer、scheduler 或 scaler。文件大小分别约 590 MB、892 MB。原始 checkpoint 保留；逐张量一致性和 SHA-256 见 `checkpoints/manifest.json`。
 
-发布用纯权重位于 `ControlTac/checkpoints/`，按作者要求使用原文件名；实验目录 `FT/` 根目录下同名文件仍是完整训练 checkpoint，注意区别目录。
+发布用纯权重位于 `checkpoints/force_control.pth` 和 `checkpoints/force_pose_control.pth`，只包含模型参数。
 
 所有物体、两个阶段统一使用 `shared` 归一化配置，默认自动选择，无需传入物体名或归一化 key。`--normalization` 用于指定保存的配置文件。
 
