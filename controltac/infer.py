@@ -20,7 +20,7 @@ def main():
     p.add_argument('--initial-force', nargs=3, type=float)
     p.add_argument('--target-force', nargs=3, type=float)
     p.add_argument('--normalization', type=Path)
-    p.add_argument('--subset')
+    p.add_argument('--subset', help='Key in the normalization JSON; selects preprocessing statistics, not a model class condition')
     p.add_argument('--output', type=Path, default=Path('outputs/generated.png'))
     p.add_argument('--steps', type=int, default=50)
     p.add_argument('--seed', type=int, default=42)
@@ -52,7 +52,10 @@ def main():
     if config['stage'] != args.stage:
         p.error('Model config stage mismatch')
     model = load_weights(create_model(config), args.checkpoint).to(args.device).eval()
-    stats = read_config(args.normalization)[args.subset]
+    normalization = read_config(args.normalization)
+    if args.subset not in normalization:
+        p.error(f'Unknown normalization key {args.subset!r}; available: {", ".join(normalization)}')
+    stats = normalization[args.subset]
     reference = normalize(read_rgb(args.reference), stats)[None]
     ae = load_autoencoder(args.codec_device, args.ae, args.local_only)
     with torch.inference_mode():

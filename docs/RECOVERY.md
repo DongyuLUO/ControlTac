@@ -2,8 +2,8 @@
 
 ## Verified checkpoint mapping
 
-- `Only_Force_00_B_phase_2_checkpoint_epoch_65.pth` → `checkpoints/force_control.pth` (196 tensors).
-- `CN_300_00_phase_2_checkpoint_epoch_60.pth` → `checkpoints/force_pose_control.pth` (302 tensors; six ControlNet blocks).
+- `Only_Force_00_B_phase_2_checkpoint_epoch_65.pth` → `checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth` (196 tensors).
+- `CN_300_00_phase_2_checkpoint_epoch_60.pth` → `checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth` (302 tensors; six ControlNet blocks).
 
 The original files are untouched. Export strips epoch, optimizer, scheduler and scaler state without changing tensor values, names or precision. `checkpoints/manifest.json` contains sizes, SHA-256 hashes and exact equality results. The historical `phase_2` filename suffix denotes an optimizer schedule phase, not the paper's second component.
 

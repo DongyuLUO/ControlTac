@@ -18,7 +18,7 @@ for source, name in [(reference['tactile_nobg'],'reference.png'), (target['tacti
     shutil.copy2(root/source,assets/name)
 stats = torch.load(root/'data_all/cross7/minmax_cross7_train.pt',map_location='cpu',weights_only=True)
 (out/'normalization.json').write_text(json.dumps({'cross7':{k:v.flatten().tolist() for k,v in stats.items()}},indent=2))
-for stage, filename, checkpoint in [('force','force.json','force_control.pth'),('force_pose','force_pose.json','force_pose_control.pth')]:
+for stage, filename, checkpoint in [('force','force.json','Only_Force_00_B_phase_2_checkpoint_epoch_65.pth'),('force_pose','force_pose.json','CN_300_00_phase_2_checkpoint_epoch_60.pth')]:
     example = dict(stage=stage, checkpoint='../checkpoints/'+checkpoint,
                    reference='assets/reference.png', background='assets/background.png',
                    initial_force=json.loads(reference['FT'])[:3],target_force=json.loads(target['FT'])[:3],

@@ -20,10 +20,14 @@ python run.py infer --stage force_pose
 
 | 旧文件 | 新文件 |
 | --- | --- |
-| Only_Force_00_B_phase_2_checkpoint_epoch_65.pth | checkpoints/force_control.pth |
-| CN_300_00_phase_2_checkpoint_epoch_60.pth | checkpoints/force_pose_control.pth |
+| Only_Force_00_B_phase_2_checkpoint_epoch_65.pth | checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth |
+| CN_300_00_phase_2_checkpoint_epoch_60.pth | checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth |
 
 新文件只包含模型参数与模型必要 buffer，不包含 epoch、optimizer、scheduler 或 scaler。文件大小分别约 590 MB、892 MB。原始 checkpoint 保留；逐张量一致性和 SHA-256 见 `checkpoints/manifest.json`。
+
+发布用纯权重位于 `ControlTac/checkpoints/`，按作者要求使用原文件名；实验目录 `FT/` 根目录下同名文件仍是完整训练 checkpoint，注意区别目录。
+
+`--subset cross7` 表示读取归一化 JSON 中 `cross7` 的 min/max，用于输入预处理和输出还原。它不是物体类别控制，也不会加载整个 cross7 数据集。示例的 JSON 只有 cross7 一组数值；新训练保存的 JSON 有七个子集。使用哪组统计应与权重的训练预处理一致，不能靠随意更改 subset 来切换物体。
 
 ## 数据划分
 

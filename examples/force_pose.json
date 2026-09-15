@@ -1,6 +1,6 @@
 {
   "stage": "force_pose",
-  "checkpoint": "../checkpoints/force_pose_control.pth",
+  "checkpoint": "../checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth",
   "reference": "assets/reference.png",
   "background": "assets/background.png",
   "initial_force": [

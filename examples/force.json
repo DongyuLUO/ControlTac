@@ -1,6 +1,6 @@
 {
   "stage": "force",
-  "checkpoint": "../checkpoints/force_control.pth",
+  "checkpoint": "../checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth",
   "reference": "assets/reference.png",
   "background": "assets/background.png",
   "initial_force": [

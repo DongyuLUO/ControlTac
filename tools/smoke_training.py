@@ -19,5 +19,5 @@ for stage in ['force','force_pose']:
     command = [sys.executable,'-m','controltac.train','--config',str(path),'--data-root',str(repo.parent),
                '--device','cpu','--codec-device','cpu','--local-only','--save-training-state']
     if stage == 'force_pose':
-        command += ['--initialize-from',str(repo/'checkpoints/force_control.pth')]
+        command += ['--initialize-from',str(repo/'checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth')]
     subprocess.run(command,cwd=repo,check=True)

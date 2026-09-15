@@ -1,7 +1,7 @@
 {
   "force_control": {
     "source": "Only_Force_00_B_phase_2_checkpoint_epoch_65.pth",
-    "file": "force_control.pth",
+    "file": "Only_Force_00_B_phase_2_checkpoint_epoch_65.pth",
     "source_bytes": 1770177404,
     "output_bytes": 590210867,
     "tensors": 196,
@@ -10,7 +10,7 @@
   },
   "force_pose_control": {
     "source": "CN_300_00_phase_2_checkpoint_epoch_60.pth",
-    "file": "force_pose_control.pth",
+    "file": "CN_300_00_phase_2_checkpoint_epoch_60.pth",
     "source_bytes": 1494899666,
     "output_bytes": 891837471,
     "tensors": 302,

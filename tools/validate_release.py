@@ -14,7 +14,7 @@ report = {'environment':{n:importlib.metadata.version(n) for n in ['torch','torc
           'full_paper_training_run':False,'paper_metrics_reproduced':False,'checkpoint_checks':{},'training_smoke':{},'inference_smoke':{}}
 manifest = json.loads((root/'checkpoints/manifest.json').read_text())
 for stage, name in [('force','force_control'),('force_pose','force_pose_control')]:
-    path = root/f'checkpoints/{name}.pth'
+    path = root/'checkpoints'/manifest[name]['file']
     with path.open('rb') as f:
         sha = hashlib.file_digest(f,'sha256').hexdigest()
     assert sha == manifest[name]['sha256']
