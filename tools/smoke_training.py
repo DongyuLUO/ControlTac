@@ -9,7 +9,7 @@ from controltac.prepare import read_rows, write_csv
 repo = Path(__file__).resolve().parents[1]
 out = repo/'runs/smoke'
 out.mkdir(parents=True,exist_ok=True)
-rows = [r for r in read_rows(repo/'splits/force_pose_train.csv') if r['subset']=='cross7']
+rows = [r for r in read_rows(repo/'splits/force_pose_train.csv') if r['source_recording']=='cross7']
 write_csv(out/'data.csv',rows[:8])
 for stage in ['force','force_pose']:
     config = json.loads((repo/f'configs/{stage}.json').read_text())

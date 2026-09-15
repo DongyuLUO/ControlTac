@@ -2,65 +2,7 @@
   "seed": 42,
   "reconstruction": true,
   "allow_repeated_force_samples": true,
-  "rounding": "Nearest integer allocation; cylinder92 split equally.",
-  "subsets": {
-    "cross7": {
-      "force_samples": 3334,
-      "force_unique_images": 3334,
-      "force_repeated_samples": 0,
-      "pose_samples": 1167,
-      "unique_contact_poses": 300,
-      "available_force_images": 7011
-    },
-    "cylinder7": {
-      "force_samples": 3333,
-      "force_unique_images": 3333,
-      "force_repeated_samples": 0,
-      "pose_samples": 1167,
-      "unique_contact_poses": 300,
-      "available_force_images": 6158
-    },
-    "cylinder92_1": {
-      "force_samples": 1667,
-      "force_unique_images": 1491,
-      "force_repeated_samples": 176,
-      "pose_samples": 583,
-      "unique_contact_poses": 150,
-      "available_force_images": 1491
-    },
-    "cylinder92_2": {
-      "force_samples": 1667,
-      "force_unique_images": 1667,
-      "force_repeated_samples": 0,
-      "pose_samples": 583,
-      "unique_contact_poses": 150,
-      "available_force_images": 4740
-    },
-    "cylinder142": {
-      "force_samples": 3333,
-      "force_unique_images": 3333,
-      "force_repeated_samples": 0,
-      "pose_samples": 1167,
-      "unique_contact_poses": 300,
-      "available_force_images": 8318
-    },
-    "sphere28": {
-      "force_samples": 3333,
-      "force_unique_images": 3333,
-      "force_repeated_samples": 0,
-      "pose_samples": 1167,
-      "unique_contact_poses": 300,
-      "available_force_images": 5131
-    },
-    "triple_cylinder7": {
-      "force_samples": 3333,
-      "force_unique_images": 3333,
-      "force_repeated_samples": 0,
-      "pose_samples": 1166,
-      "unique_contact_poses": 300,
-      "available_force_images": 6726
-    }
-  },
+  "rounding": "Nearest integer allocation across six objects; Thin Cylinder source quotas retained.",
   "sources": {
     "data_all/cross7/cross7_train.csv": "58f1f2ec22f92c8e27bb1c39813b3370f32e87ec405f4511cdd71b44c75889ff",
     "data_all/cross7/cross7.csv": "97f7fec0e1985cfe30b6abb155f9c7742daf8644c054a891d6a38d22726f39e5",
@@ -102,5 +44,55 @@
     "unique_images": 957,
     "poses": 180
   },
-  "pose_disjoint_train_validation_test": true
+  "pose_disjoint_train_validation_test": true,
+  "objects": {
+    "Cross": {
+      "force_samples": 3334,
+      "force_unique_images": 3334,
+      "force_repeated_samples": 0,
+      "pose_samples": 1167,
+      "unique_contact_poses": 300,
+      "available_force_images": 7011
+    },
+    "Slim Cylinder": {
+      "force_samples": 3333,
+      "force_unique_images": 3333,
+      "force_repeated_samples": 0,
+      "pose_samples": 1167,
+      "unique_contact_poses": 300,
+      "available_force_images": 6158
+    },
+    "Thin Cylinder": {
+      "force_samples": 3334,
+      "force_unique_images": 3158,
+      "force_repeated_samples": 176,
+      "pose_samples": 1166,
+      "unique_contact_poses": 300,
+      "available_force_images": 6231
+    },
+    "Medium Cylinder": {
+      "force_samples": 3333,
+      "force_unique_images": 3333,
+      "force_repeated_samples": 0,
+      "pose_samples": 1167,
+      "unique_contact_poses": 300,
+      "available_force_images": 8318
+    },
+    "Big Sphere": {
+      "force_samples": 3333,
+      "force_unique_images": 3333,
+      "force_repeated_samples": 0,
+      "pose_samples": 1167,
+      "unique_contact_poses": 300,
+      "available_force_images": 5131
+    },
+    "Triple Cylinder": {
+      "force_samples": 3333,
+      "force_unique_images": 3333,
+      "force_repeated_samples": 0,
+      "pose_samples": 1166,
+      "unique_contact_poses": 300,
+      "available_force_images": 6726
+    }
+  }
 }

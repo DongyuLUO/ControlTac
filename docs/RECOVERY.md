@@ -29,13 +29,13 @@ The surviving model code and strict checkpoint loading establish 12 backbone blo
 
 ## Data reconstruction and limits
 
-This is a new deterministic split, not the missing original split. The original source files and their hashes are recorded. Primary CSVs are supplemented from the corresponding full local object CSV when necessary. The cylinder92_1 / cylinder92_2 labels come from their explicit source CSVs, not the misleading `train1` / `train2` filenames.
+This is a new deterministic split, not the missing original split. The original source files and their hashes are recorded. Primary CSVs are supplemented from the corresponding full local object CSV when necessary. Thin Cylinder is a single object; original recording identifiers are retained only in source provenance and file paths.
 
 All annotated candidate training poses are excluded from new validation/test selection. Up to 30 distinct poses per physical object are used for each holdout. Both training stages may share poses and images, which is intentional for sequential training. Train/validation/test pose sets are disjoint. The holdout is newly reconstructed and must not be presented as an unseen evaluation set for the historical checkpoints, whose original training membership is unknown.
 
-The force-pose reconstruction uses `*_train_pos_300.csv`; cylinder92_1 instead uses the surviving `*_train_pos_200.csv` to select 150 poses. Cylinder92_2 supplies another 150 poses, excluding numeric pose duplicates already selected from cylinder92_1. This yields 300 unique poses for the combined object, not 600. Selected images retain their original force and mask annotations.
+The force-pose reconstruction selects 300 unique poses for each of the six objects. Thin Cylinder combines its available annotated recordings, excluding numeric pose duplicates across recordings. Selected images retain their original force and mask annotations.
 
-The complete cylinder92_1 source has only 1,517 unique images; after the current holdout, 1,491 remain. A quota of 1,667 therefore needs 176 repeated samples. The strict preparation command refuses to fill this gap silently. Repetition, when explicitly selected, is confined to the force sample list and never to the 7,000-image pose list.
+To preserve the original source allocation within Thin Cylinder, one recording contributes a quota of 1,667 samples from 1,491 available images after holdout, requiring 176 repeated samples. The strict preparation command refuses to fill this gap silently. Repetition, when explicitly selected, is confined to the force sample list and never to the 7,000-image pose list.
 
 ## Historical preprocessing uncertainty
 

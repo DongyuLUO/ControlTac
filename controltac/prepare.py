@@ -11,7 +11,8 @@ from pathlib import Path
 SUBSETS = ['cross7', 'cylinder7', 'cylinder92_1', 'cylinder92_2', 'cylinder142', 'sphere28', 'triple_cylinder7']
 FORCE_QUOTAS = [3334, 3333, 1667, 1667, 3333, 3333, 3333]
 POSE_QUOTAS = [1167, 1167, 583, 583, 1167, 1167, 1166]
-FIELDS = ['object', 'subset', 'image', 'mask', 'pose', 'force', 'source_csv', 'source_row', 'sample_id']
+OBJECT_NAMES = {'cross7': 'Cross', 'cylinder7': 'Slim Cylinder', 'cylinder92': 'Thin Cylinder', 'cylinder142': 'Medium Cylinder', 'sphere28': 'Big Sphere', 'triple_cylinder7': 'Triple Cylinder'}
+FIELDS = ['object', 'source_recording', 'image', 'mask', 'pose', 'force', 'source_csv', 'source_row', 'sample_id']
 
 def physical(subset):
     return 'cylinder92' if subset.startswith('cylinder92_') else subset
@@ -35,7 +36,7 @@ def read_source(root, path, subset):
         mask = row.get('depth_align', '').replace('\\', '/')
         if mask and not (root/mask).is_file():
             raise FileNotFoundError(root/mask)
-        rows.append(dict(object=physical(subset), subset=subset, image=image, mask=mask,
+        rows.append(dict(object=OBJECT_NAMES[physical(subset)], source_recording=subset, image=image, mask=mask,
                          pose=canonical_pose(row['indentation_init_pose']),
                          force=json.dumps(ast.literal_eval(row['FT'])[:3]),
                          source_csv=path, source_row=i+2, sample_id=''))
@@ -91,7 +92,7 @@ def build(root, output, seed=42, allow_repeat=False):
     output.mkdir(parents=True, exist_ok=True)
     force, position, val, test = [], [], [], []
     report = {'seed':seed, 'reconstruction':True, 'allow_repeated_force_samples':allow_repeat,
-              'rounding':'Nearest integer allocation; cylinder92 split equally.', 'subsets':{}, 'sources':{}}
+              'rounding':'Nearest integer allocation across six objects; Thin Cylinder source quotas retained.', 'objects':{}, 'sources':{}}
     pools, pose_rows = {}, {}
     for subset in SUBSETS:
         obj = physical(subset)
@@ -111,7 +112,7 @@ def build(root, output, seed=42, allow_repeat=False):
     reserved = set().union(*(set(grouped(rows)) for rows in pose_rows.values()))
     all_groups = grouped([r for rows in pools.values() for r in rows])
     holdout_val, holdout_test = set(), set()
-    for obj in dict.fromkeys(map(physical, SUBSETS)):
+    for obj in OBJECT_NAMES.values():
         available = sorted(k for k in all_groups if k[0] == obj and k not in reserved)
         rng.shuffle(available)
         n = min(30, len(available)//3)
@@ -131,10 +132,13 @@ def build(root, output, seed=42, allow_repeat=False):
         position.extend(pos)
         val.extend(r for r in pool if (r['object'],r['pose']) in holdout_val)
         test.extend(r for r in pool if (r['object'],r['pose']) in holdout_test)
-        report['subsets'][subset] = dict(force_samples=len(selected), force_unique_images=len(unique(selected)),
+        record_stats = dict(force_samples=len(selected), force_unique_images=len(unique(selected)),
                                         force_repeated_samples=len(selected)-len(unique(selected)),
                                         pose_samples=len(pos), unique_contact_poses=len(grouped(pos)),
                                         available_force_images=len(train_pool))
+        summary = report['objects'].setdefault(OBJECT_NAMES[physical(subset)], {})
+        for key, value in record_stats.items():
+            summary[key] = summary.get(key, 0) + value
     assert len(force) == 20000 and len(position) == 7000
     assert len(unique(position)) == 7000 and len(grouped(position)) == 1800
     train_keys = set(grouped(force+position))
@@ -162,7 +166,7 @@ def main():
     parser.add_argument('--skip-normalization', action='store_true')
     args = parser.parse_args()
     report = build(args.data_root.resolve(), args.output, args.seed, args.allow_repeated_force_samples)
-    print(json.dumps(report['subsets'], indent=2), flush=True)
+    print(json.dumps(report['objects'], indent=2), flush=True)
     if not args.skip_normalization:
         compute_normalization(args.data_root.resolve(), args.output)
 

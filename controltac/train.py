@@ -42,7 +42,7 @@ def main():
     stats = read_config(cfg['normalization'])
     groups = defaultdict(list)
     for row in rows:
-        key = (row['subset'], row['pose']) if cfg['stage'] == 'force' else (row['subset'],)
+        key = (row['source_recording'], row['pose']) if cfg['stage'] == 'force' else (row['source_recording'],)
         groups[key].append(row)
     keys = sorted(groups)
     # Group weights preserve manifest sample proportions, including explicit repeats.

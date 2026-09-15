@@ -35,6 +35,8 @@ The adapter is validated against the local extracted `tactile_nobg` tree used to
 
 ## Splits and annotations
 
+Object labels are Cross, Slim Cylinder, Thin Cylinder, Medium Cylinder, Big Sphere, and Triple Cylinder. The CSV `object` field and summary report use these six names. `source_recording` and file paths retain upstream identifiers only for provenance and reproducible sampling; the Thin Cylinder recordings are not separate object classes.
+
 Use the checked-in split CSVs and `normalization.json` for training. They retain exact sample quotas, image paths, forces, pose identifiers, source CSV and source record indices. Stage one includes 176 explicitly recorded repetitions; stage two contains 7,000 distinct images and six objects with 300 distinct poses each.
 
 The new validation/test records hold out image, force and pose information. Mask fields can be empty because those poses were excluded from the aligned training masks. Supply independent aligned masks before evaluating mask-conditioned generation on them. New holdouts are not proven unseen data for historical checkpoints.

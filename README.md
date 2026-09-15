@@ -46,20 +46,19 @@ All objects and both stages use the same `shared` normalization profile. It is s
 
 ## Data
 
-Only six physical objects are used: cross7, cylinder7, cylinder92, cylinder142, sphere28, and triple_cylinder7. The cylinder92_1 and cylinder92_2 recordings share one object quota.
+The six objects are Cross, Slim Cylinder, Thin Cylinder, Medium Cylinder, Big Sphere, and Triple Cylinder. Thin Cylinder is one object, including all of its source recordings.
 
-| Subset | Force samples | Force+pose images | Unique contact poses |
+| Object | Force samples | Force+pose images | Unique contact poses |
 | --- | ---: | ---: | ---: |
-| cross7 | 3,334 | 1,167 | 300 |
-| cylinder7 | 3,333 | 1,167 | 300 |
-| cylinder92_1 | 1,667 | 583 | 150 |
-| cylinder92_2 | 1,667 | 583 | 150 |
-| cylinder142 | 3,333 | 1,167 | 300 |
-| sphere28 | 3,333 | 1,167 | 300 |
-| triple_cylinder7 | 3,333 | 1,166 | 300 |
+| Cross | 3,334 | 1,167 | 300 |
+| Slim Cylinder | 3,333 | 1,167 | 300 |
+| Thin Cylinder | 3,334 | 1,166 | 300 |
+| Medium Cylinder | 3,333 | 1,167 | 300 |
+| Big Sphere | 3,333 | 1,167 | 300 |
+| Triple Cylinder | 3,333 | 1,166 | 300 |
 | **Total** | **20,000** | **7,000** | **1,800** |
 
-These quotas are realized in the checked-in split. Stage one contains **19,824 distinct images and 176 explicitly repeated samples**, because cylinder92_1 lacks enough unique images. See `splits/report.json` for the complete audit. Neither 20,000 nor 7,000 is divisible by six: the integer allocation differs by at most one image between objects. Stage two never repeats an image.
+These quotas are realized in the checked-in split. Stage one contains **19,824 distinct images and 176 explicitly repeated samples**, to preserve the specified source allocation within Thin Cylinder. See `splits/report.json` for the complete audit. Neither 20,000 nor 7,000 is divisible by six: the integer allocation differs by at most one image between objects. Stage two never repeats an image.
 
 Data paths are relative to `--data-root`, the directory containing `data_all/`. **Use the background-subtracted images already provided by FeelAnyForce.** We do not re-upload its image dataset. Our small annotation supplement supplies aligned contact masks and a pixel-checksum index for the exact image selection. See [data preparation](docs/DATA.md) for downloading the upstream archive, linking its images, and adding the masks.
 
@@ -77,7 +76,7 @@ To reconstruct from the original local CSV tree:
 python -m controltac.prepare --data-root /path/to/FT
 ```
 
-This fails clearly if there are too few unique images. Only if repeated **force** samples are intended, explicitly add `--allow-repeated-force-samples`. The supplied local cylinder92_1 pool requires this option for the requested quota. All repetitions are deterministic and recorded; masks and force labels are never invented.
+This fails clearly if there are too few unique images. Only if repeated **force** samples are intended, explicitly add `--allow-repeated-force-samples`. The supplied Thin Cylinder source allocation requires this option for the requested quota. All repetitions are deterministic and recorded; masks and force labels are never invented.
 
 ## Train
 
