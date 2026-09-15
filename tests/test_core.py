@@ -4,11 +4,31 @@ import json
 import tempfile
 from pathlib import Path
 import torch
+import numpy as np
 from controltac.diffusion import Diffusion
 from controltac.prepare import stratified, grouped, FORCE_QUOTAS, POSE_QUOTAS, compute_normalization
 from controltac.runtime import normalize, denormalize
 
 class CoreTests(unittest.TestCase):
+    def test_examples_force_range_and_pose_conditions(self):
+        examples = Path(__file__).resolve().parents[1]/'examples'
+        provenance = json.loads((examples/'provenance.json').read_text())['examples']
+        for stage in ['force', 'force_pose']:
+            config = json.loads((examples/f'{stage}.json').read_text())
+            pair = provenance[stage]
+            for key, source in [('initial_force','reference'),('target_force','target')]:
+                self.assertEqual(config[key], pair[source]['force'])
+                self.assertTrue(-10 <= config[key][2] <= -1)
+            self.assertNotEqual(config['initial_force'], config['target_force'])
+            same_pose = pair['reference']['contact_pose'] == pair['target']['contact_pose']
+            self.assertEqual(same_pose, stage == 'force')
+            masks = [np.load(examples/f'assets/{stage}/{name}_mask.npy',allow_pickle=False) for name in ['reference','target']]
+            self.assertEqual(np.array_equal(*masks), stage == 'force')
+            if stage == 'force_pose':
+                self.assertEqual(config['mask'], 'assets/force_pose/target_mask.npy')
+            else:
+                self.assertNotIn('mask', config)
+
     def test_preparation_preserves_shared_normalization(self):
         root = Path(__file__).resolve().parents[1]
         expected = json.loads((root/'examples/normalization.json').read_text())

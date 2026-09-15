@@ -1,30 +1,95 @@
 {
-  "reference": {
-    "time": "20240416_122101",
-    "TCP": "[-0.029955306349418297, -0.5818361655942521, 0.10187600902734846, -3.137133231455904, 0.0620256224865854, 0.005327099833866884]",
-    "TCP_wrt_sensor": "[-0.004811391006530422, 0.002400823412815428, -0.027809045647614283, -0.0016685464009468325, -0.0004838696023227476, -0.0004508813326935868]",
-    "indentation_init_pose": "[-0.0048000000000000004, 0.0023333333333333335, 0, 0, 0, 0.0]",
-    "FT": "[-0.068, 0.031, -2.433, 0.0002, 0.0036, 0.0004]",
-    "step_size": "0.0001",
-    "real_step_displacement": "[-1.588524e-06  6.653301e-06  7.670327e-05  3.430324e-05  4.629206e-05\r\n -1.258806e-05]",
-    "tactile_nobg": "data_all/cross7/tactile_nobg/1713284461456.png",
-    "depth_map": "cross7/depth/1713284461456.npy",
-    "depth_align": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
-    "depth_align_pose": "[77, 83, 0]"
-  },
-  "target": {
-    "time": "20240416_122125",
-    "TCP": "[-0.029930068269972472, -0.5818414971480147, 0.10134591334998658, -3.13725895217321, 0.06220381259288834, 0.005280254278338612]",
-    "TCP_wrt_sensor": "[-0.004784422814192225, 0.002403963402688025, -0.027279017657463763, -0.0015397945254064288, -0.00045164516368338784, -0.00033857545493254316]",
-    "indentation_init_pose": "[-0.0048000000000000004, 0.0023333333333333335, 0, 0, 0, 0.0]",
-    "FT": "[-0.311, 0.416, -12.486, -0.0127, 0.0223, 0.0025]",
-    "step_size": "0.0001",
-    "real_step_displacement": "[-3.324358e-06 -9.809569e-06  1.117913e-04 -1.992677e-05  2.136088e-06\r\n  4.843395e-05]",
-    "tactile_nobg": "data_all/cross7/tactile_nobg/1713284485230.png",
-    "depth_map": "cross7/depth/1713284485230.npy",
-    "depth_align": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
-    "depth_align_pose": "[77, 83, 0]"
-  },
-  "normalization_source": "data_all/cross7/minmax_cross7_train.pt",
-  "note": "The maintainer confirmed these normalization values are shared by all objects and both stages."
+  "object": "Cross",
+  "force_units": "N",
+  "position_units": "m",
+  "fz_range": [
+    -10,
+    -1
+  ],
+  "examples": {
+    "force": {
+      "reference": {
+        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
+        "source_row": 2,
+        "image": "data_all/cross7/tactile_nobg/1713284461456.png",
+        "mask": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
+        "force": [
+          -0.068,
+          0.031,
+          -2.433
+        ],
+        "contact_pose": [
+          -0.0048000000000000004,
+          0.0023333333333333335,
+          0,
+          0,
+          0,
+          0.0
+        ]
+      },
+      "target": {
+        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
+        "source_row": 6,
+        "image": "data_all/cross7/tactile_nobg/1713284477321.png",
+        "mask": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
+        "force": [
+          -0.18,
+          0.285,
+          -8.638
+        ],
+        "contact_pose": [
+          -0.0048000000000000004,
+          0.0023333333333333335,
+          0,
+          0,
+          0,
+          0.0
+        ]
+      },
+      "pose_changed": false,
+      "position_change_m": 0.0
+    },
+    "force_pose": {
+      "reference": {
+        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
+        "source_row": 2,
+        "image": "data_all/cross7/tactile_nobg/1713284461456.png",
+        "mask": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
+        "force": [
+          -0.068,
+          0.031,
+          -2.433
+        ],
+        "contact_pose": [
+          -0.0048000000000000004,
+          0.0023333333333333335,
+          0,
+          0,
+          0,
+          0.0
+        ]
+      },
+      "target": {
+        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
+        "source_row": 1408,
+        "image": "data_all/cross7/tactile_nobg/1713284607054.png",
+        "mask": "data_all/cross7/depth_align_cross7/1713284615011_depth_align.npy",
+        "force": [
+          0.022,
+          0.48,
+          -7.957
+        ],
+        "contact_pose": [
+          -0.0037333333333333333,
+          -0.002333333333333333,
+          0,
+          0,
+          0,
+          0.0
+        ]
+      },
+      "pose_changed": true,
+      "position_change_m": 0.004787019485604331
+    }
+  }
 }

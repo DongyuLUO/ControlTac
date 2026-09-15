@@ -32,6 +32,15 @@ python run.py infer --stage force_pose
 
 Outputs are written to `outputs/`. The two examples include a reference image, background, target force, normalization, and an aligned mask for pose control. Use `--device cpu` if CUDA is unavailable. The codec runs on CPU by default to reduce GPU memory use; on a larger GPU, add `--codec-device cuda`.
 
+The examples use measured Cross samples with both initial and target Fz within **[-10, -1] N**:
+
+| Example | Initial force [Fx, Fy, Fz] (N) | Target force [Fx, Fy, Fz] (N) | Contact pose |
+| --- | --- | --- | --- |
+| Force control | [-0.068, 0.031, -2.433] | [-0.180, 0.285, -8.638] | Unchanged |
+| Force and pose control | [-0.068, 0.031, -2.433] | [0.022, 0.480, -7.957] | Position shifts by 4.79 mm; target mask changes |
+
+Each example has its own reference and measured target residual image under `examples/assets/`. Reference masks are included for comparison; force-only inference does not consume a mask. Source annotations and exact contact poses are recorded in `examples/provenance.json`.
+
 For your own inputs:
 
 ```bash

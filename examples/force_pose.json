@@ -1,7 +1,7 @@
 {
   "stage": "force_pose",
   "checkpoint": "../checkpoints/force_pose_control.pth",
-  "reference": "assets/reference.png",
+  "reference": "assets/force_pose/reference.png",
   "background": "assets/background.png",
   "initial_force": [
     -0.068,
@@ -9,10 +9,10 @@
     -2.433
   ],
   "target_force": [
-    -0.311,
-    0.416,
-    -12.486
+    0.022,
+    0.48,
+    -7.957
   ],
   "normalization": "normalization.json",
-  "mask": "assets/contact_mask.npy"
+  "mask": "assets/force_pose/target_mask.npy"
 }
