@@ -1,11 +1,8 @@
 # Recovery record
 
-## Verified checkpoint mapping
+## Pretrained checkpoints
 
-- `force_control.pth` → `checkpoints/force_control.pth` (196 tensors).
-- `force_pose_control.pth` → `checkpoints/force_pose_control.pth` (302 tensors; six ControlNet blocks).
-
-The original files are untouched. Export strips epoch, optimizer, scheduler and scaler state without changing tensor values, names or precision. `checkpoints/manifest.json` contains sizes, SHA-256 hashes and exact equality results. The historical `phase_2` filename suffix denotes an optimizer schedule phase, not the paper's second component.
+Download `force_control.pth` and `force_pose_control.pth` from the [model release](https://github.com/DongyuLUO/ControlTac/releases/tag/v0.1.0) into `checkpoints/`. Both files contain only model parameters and required buffers. Sizes, tensor counts and SHA-256 checksums are recorded in `checkpoints/manifest.json`.
 
 ## Recovered architecture
 
@@ -19,7 +16,7 @@ The original force and force-pose transformer implementations were migrated into
 - Configuration and sampling use only the requested six physical objects.
 - Training schedules use 75,000 optimizer steps per stage and a single cosine decay.
 - Training and inference share the same residual-image convention and saved normalization.
-- Normalization for a new run is computed from unique first-stage training images only, shared with stage two, and saved next to weights. Test pixels cannot influence these statistics.
+- All objects and both stages use the fixed shared normalization profile, saved next to trained weights.
 - Frozen DC-AE encoding runs without gradients and on a configurable device.
 - Gradient clipping runs after AMP unscaling, and every pair contributes to an optimizer step.
 - DDIM uses the 1,000-step training schedule independently of inference step count; the terminal alpha is 1, returning a clean latent. This corrects the old off-by-one sampler.

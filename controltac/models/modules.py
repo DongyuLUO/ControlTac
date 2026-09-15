@@ -138,7 +138,7 @@ class SlimGLUMBConv(GLUMBConv):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # 移除 self.inverted_conv 层
+        # The inverted convolution is omitted.
         del self.inverted_conv
         self.out_dim = self.point_conv.out_dim
 
@@ -149,7 +149,7 @@ class SlimGLUMBConv(GLUMBConv):
         else:
             H, W = HW
 
-        # 直接使用 x，跳过 self.inverted_conv 层的调用
+        # Pass the input directly without an inverted convolution.
         x = x.reshape(B, H, W, C).permute(0, 3, 1, 2)
         # x = self.inverted_conv(x)
         x = self.depth_conv(x)

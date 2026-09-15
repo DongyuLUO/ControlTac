@@ -29,7 +29,7 @@ def main():
         assert state.keys() == recovered.keys()
         assert all(torch.equal(state[k], recovered[k]) for k in state)
         sha = hashlib.file_digest(destination.open('rb'), 'sha256').hexdigest()
-        report[name] = dict(source=source.name, file=destination.name, source_bytes=source.stat().st_size,
+        report[name] = dict(file=destination.name,
                             output_bytes=destination.stat().st_size, tensors=len(state), sha256=sha,
                             exact_tensor_equality=True)
         print(json.dumps(report[name]), flush=True)

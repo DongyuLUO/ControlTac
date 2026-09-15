@@ -18,12 +18,12 @@ Tested locally with PyTorch 2.7.1+cu118, torchvision, diffusers 0.38.0 and timm 
 
 ## Generate an example
 
-Place the tensor-only weights in `checkpoints/`:
+Download the tensor-only weights below and save them in `checkpoints/`:
 
 | File | Purpose | Size |
 | --- | --- | ---: |
-| `force_control.pth` | Force control | 590 MB |
-| `force_pose_control.pth` | Force and pose control | 892 MB |
+| [force_control.pth](https://github.com/DongyuLUO/ControlTac/releases/download/v0.1.0/force_control.pth) | Force control | 590 MB |
+| [force_pose_control.pth](https://github.com/DongyuLUO/ControlTac/releases/download/v0.1.0/force_pose_control.pth) | Force and pose control | 892 MB |
 
 ```bash
 python run.py infer --stage force
