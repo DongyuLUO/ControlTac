@@ -147,24 +147,11 @@ def build(root, output, seed=42, allow_repeat=False):
     return report
 
 def compute_normalization(root, output):
-    import numpy as np
-    import cv2
-    rows = unique(read_rows(output/'force_train.csv'))
-    stats = {}
-    for subset in SUBSETS:
-        low, high = np.full(3, np.inf), np.full(3, -np.inf)
-        for row in rows:
-            if row['subset'] != subset:
-                continue
-            image = cv2.imread(str(root/row['image']), cv2.IMREAD_COLOR)
-            if image is None:
-                raise FileNotFoundError(root/row['image'])
-            x = cv2.cvtColor(cv2.resize(image, (320,256)), cv2.COLOR_BGR2RGB).astype(np.float32)/255 - 127/255
-            low = np.minimum(low, x.min(axis=(0,1)))
-            high = np.maximum(high, x.max(axis=(0,1)))
-        stats[subset] = {'min':low.tolist(), 'max':high.tolist()}
-        print(f'Normalization complete: {subset}',flush=True)
-    (output/'normalization.json').write_text(json.dumps(stats, indent=2))
+    # The maintainer confirmed one fixed profile is shared by all objects/stages.
+    profile = Path(__file__).with_name('normalization.json')
+    (output/'normalization.json').write_text(profile.read_text(encoding='utf-8'), encoding='utf-8')
+    print('Shared normalization saved', flush=True)
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

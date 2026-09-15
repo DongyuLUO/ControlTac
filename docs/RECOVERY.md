@@ -2,8 +2,8 @@
 
 ## Verified checkpoint mapping
 
-- `Only_Force_00_B_phase_2_checkpoint_epoch_65.pth` → `checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth` (196 tensors).
-- `CN_300_00_phase_2_checkpoint_epoch_60.pth` → `checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth` (302 tensors; six ControlNet blocks).
+- `force_control.pth` → `checkpoints/force_control.pth` (196 tensors).
+- `force_pose_control.pth` → `checkpoints/force_pose_control.pth` (302 tensors; six ControlNet blocks).
 
 The original files are untouched. Export strips epoch, optimizer, scheduler and scaler state without changing tensor values, names or precision. `checkpoints/manifest.json` contains sizes, SHA-256 hashes and exact equality results. The historical `phase_2` filename suffix denotes an optimizer schedule phase, not the paper's second component.
 
@@ -39,9 +39,7 @@ The complete cylinder92_1 source has only 1,517 unique images; after the current
 
 ## Historical preprocessing uncertainty
 
-The supplied checkpoints do not contain normalization metadata. Surviving training and inference loaders disagree: force training used per-object statistics, pose training used an average across a different set of datasets, and inference averaged whichever of dozens of `.pt` files happened to exist. Some referenced files and loaders are missing.
-
-The bundled cross7 examples use the recovered `minmax_cross7_train.pt` values and the corrected background-subtracted image convention. The exact preprocessing used to train `CN_300` cannot be proven from its weights alone. A successful forward pass is not a claim that the published numerical results have been reproduced. New training removes this ambiguity by saving and reusing one explicit normalization JSON.
+The maintainer confirmed that all objects and both stages use the same normalization values. The fixed profile is named `shared`, retaining the recovered values unchanged. Preparation copies this profile; training and inference use it for every object. Earlier reconstruction versions computed per-subset statistics; that behavior has been corrected. The numerical paper results have not been rerun.
 
 ## Validation
 

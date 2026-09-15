@@ -1,6 +1,6 @@
 {
   "stage": "force_pose",
-  "checkpoint": "../checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth",
+  "checkpoint": "../checkpoints/force_pose_control.pth",
   "reference": "assets/reference.png",
   "background": "assets/background.png",
   "initial_force": [
@@ -14,6 +14,5 @@
     -12.486
   ],
   "normalization": "normalization.json",
-  "subset": "cross7",
   "mask": "assets/contact_mask.npy"
 }

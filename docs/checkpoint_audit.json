@@ -1,5 +1,5 @@
 {
-  "Only_Force_00_B_phase_2_checkpoint_epoch_65.pth": {
+  "force_control.pth": {
     "keys": [
       "epoch",
       "model_state_dict",
@@ -794,7 +794,7 @@
       "epoch": "64"
     }
   },
-  "CN_300_00_phase_2_checkpoint_epoch_60.pth": {
+  "force_pose_control.pth": {
     "keys": [
       "epoch",
       "model_state_dict",

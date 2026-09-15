@@ -20,14 +20,14 @@ python run.py infer --stage force_pose
 
 | 旧文件 | 新文件 |
 | --- | --- |
-| Only_Force_00_B_phase_2_checkpoint_epoch_65.pth | checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth |
-| CN_300_00_phase_2_checkpoint_epoch_60.pth | checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth |
+| force_control.pth | checkpoints/force_control.pth |
+| force_pose_control.pth | checkpoints/force_pose_control.pth |
 
 新文件只包含模型参数与模型必要 buffer，不包含 epoch、optimizer、scheduler 或 scaler。文件大小分别约 590 MB、892 MB。原始 checkpoint 保留；逐张量一致性和 SHA-256 见 `checkpoints/manifest.json`。
 
 发布用纯权重位于 `ControlTac/checkpoints/`，按作者要求使用原文件名；实验目录 `FT/` 根目录下同名文件仍是完整训练 checkpoint，注意区别目录。
 
-`--subset cross7` 表示读取归一化 JSON 中 `cross7` 的 min/max，用于输入预处理和输出还原。它不是物体类别控制，也不会加载整个 cross7 数据集。示例的 JSON 只有 cross7 一组数值；新训练保存的 JSON 有七个子集。使用哪组统计应与权重的训练预处理一致，不能靠随意更改 subset 来切换物体。
+所有物体、两个阶段统一使用 `shared` 归一化配置，默认自动选择，无需传入物体名或归一化 key。`--normalization` 用于指定保存的配置文件。
 
 ## 数据划分
 
@@ -56,7 +56,7 @@ python run.py train --data-root ..
 python -m controltac.prepare --data-root .. --allow-repeated-force-samples
 ```
 
-直接使用 [FeelAnyForce](https://huggingface.co/datasets/amirsh1376/FeelAnyForce) 已有的扣背景图片，不重复发布图像数据包。我们只在 [private Release](https://github.com/DongyuLUO/ControlTac-code/releases/tag/v0.1.0) 提供权重及小型 `controltac_annotations.zip`（对齐 mask 和图像校验索引）。下载需要登录拥有仓库访问权限的 GitHub 账号。
+直接使用 [FeelAnyForce](https://huggingface.co/datasets/amirsh1376/FeelAnyForce) 已有的扣背景图片，不重复发布图像数据包。我们只在 [private Release](https://github.com/DongyuLUO/ControlTac/releases/tag/v0.1.0) 提供权重及小型 `controltac_annotations.zip`（对齐 mask 和图像校验索引）。下载需要登录拥有仓库访问权限的 GitHub 账号。
 
 解压 FeelAnyForce 后执行：
 
@@ -72,6 +72,6 @@ python run.py train --data-root data
 
 已运行两个真实权重的推理、两个阶段各一次包含 16 对样本的 optimizer step，以及数据统计、姿态隔离、DDIM 和归一化检查。没有在本机重新训练完整的 150,000 steps，也没有声称复现论文指标。
 
-旧 ControlNet 权重保留旧模型跳过第 0 个 backbone block 的行为；新训练路径修正该问题。因此使用新训练权重推理时要同时传训练产生的 `--model-config` 和 `--normalization`。旧权重缺少原始归一化 metadata，当前示例使用已恢复的 cross7 训练统计，历史 CN 的精确全局统计无法仅凭权重证明。
+旧 ControlNet 权重保留旧模型跳过第 0 个 backbone block 的行为；新训练路径修正该问题。因此使用新训练权重推理时要同时传训练产生的 `--model-config` 和 `--normalization`。所有物体和两个阶段均使用维护者确认的同一组共享归一化参数。
 
 代码的上游授权来源已记录于 `THIRD_PARTY_NOTICES.md`。原目录没有项目 LICENSE，发布前仍需作者确认来源并选择适用的项目许可证。

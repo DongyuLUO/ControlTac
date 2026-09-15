@@ -98,7 +98,7 @@ def main():
         key = rng.choices(keys, weights=weights, k=1)[0]
         candidates = groups[key]
         batch = rng.sample(candidates, cfg['batch_size']) if len(candidates) >= cfg['batch_size'] else rng.choices(candidates, k=cfg['batch_size'])
-        images = torch.stack([normalize(read_rgb(args.data_root/r['image']), stats[r['subset']]) for r in batch])
+        images = torch.stack([normalize(read_rgb(args.data_root/r['image']), stats['shared']) for r in batch])
         with torch.no_grad():
             latent = ae.encode(images.to(args.codec_device)).latent.mul(LATENT_SCALE).to(args.device)
             masks = None

@@ -26,5 +26,5 @@
     "depth_align_pose": "[77, 83, 0]"
   },
   "normalization_source": "data_all/cross7/minmax_cross7_train.pt",
-  "note": "Recovered cross7 training normalization. Historical checkpoints do not embed preprocessing metadata; the exact global normalization for CN_300 is not recoverable from weights alone."
+  "note": "The maintainer confirmed these normalization values are shared by all objects and both stages."
 }

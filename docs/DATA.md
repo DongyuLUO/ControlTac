@@ -17,7 +17,7 @@ These commands follow the [upstream extraction guide](https://huggingface.co/dat
 
 ## 2. Add ControlTac annotations and link images
 
-Download `controltac_annotations.zip` from the [private v0.1.0 release](https://github.com/DongyuLUO/ControlTac-code/releases/tag/v0.1.0). It contains aligned contact masks and `image_index.json`, **no tactile images**. Sign in to GitHub with an authorized account to access private assets.
+Download `controltac_annotations.zip` from the [private v0.1.0 release](https://github.com/DongyuLUO/ControlTac/releases/tag/v0.1.0). It contains aligned contact masks and `image_index.json`, **no tactile images**. Sign in to GitHub with an authorized account to access private assets.
 
 From the ControlTac repository:
 

@@ -1,6 +1,6 @@
 {
   "stage": "force",
-  "checkpoint": "../checkpoints/Only_Force_00_B_phase_2_checkpoint_epoch_65.pth",
+  "checkpoint": "../checkpoints/force_control.pth",
   "reference": "assets/reference.png",
   "background": "assets/background.png",
   "initial_force": [
@@ -13,6 +13,5 @@
     0.416,
     -12.486
   ],
-  "normalization": "normalization.json",
-  "subset": "cross7"
+  "normalization": "normalization.json"
 }

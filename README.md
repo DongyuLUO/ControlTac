@@ -22,8 +22,8 @@ Place the tensor-only weights in `checkpoints/`:
 
 | File | Purpose | Size |
 | --- | --- | ---: |
-| `Only_Force_00_B_phase_2_checkpoint_epoch_65.pth` | Force control | 590 MB |
-| `CN_300_00_phase_2_checkpoint_epoch_60.pth` | Force and pose control | 892 MB |
+| `force_control.pth` | Force control | 590 MB |
+| `force_pose_control.pth` | Force and pose control | 892 MB |
 
 ```bash
 python run.py infer --stage force
@@ -35,14 +35,14 @@ Outputs are written to `outputs/`. The two examples include a reference image, b
 For your own inputs:
 
 ```bash
-python -m controltac.infer --stage force_pose --checkpoint checkpoints/CN_300_00_phase_2_checkpoint_epoch_60.pth --reference reference_residual.png --background background.png --mask contact_mask.npy --initial-force -0.068 0.031 -2.433 --target-force -0.15 0.2 -8 --normalization examples/normalization.json --subset cross7 --output outputs/custom.png
+python -m controltac.infer --stage force_pose --checkpoint checkpoints/force_pose_control.pth --reference reference_residual.png --background background.png --mask contact_mask.npy --initial-force -0.068 0.031 -2.433 --target-force -0.15 0.2 -8 --normalization examples/normalization.json --normalization-key shared --output outputs/custom.png
 ```
 
 The reference must be a **background-subtracted image stored with a 127 gray offset**, matching the original `tactile_nobg` files. RGB inputs are resized to 320×256. Forces are signed `[Fx, Fy, Fz]` in newtons; the model receives `target − initial`. A mask is a 2D NumPy array or grayscale image in the same sensor coordinates. It is encoded independently of image normalization.
 
 When using newly trained weights, also pass `--model-config runs/force_pose/config.json --normalization runs/force_pose/normalization.json`. This selects the corrected backbone path instead of the compatibility path required by the historical CN checkpoint.
 
-`--subset cross7` selects the `cross7` entry in the normalization JSON. It does not filter a dataset or pass an object-class label to the model. Use statistics consistent with the checkpoint's training preprocessing. The bundled example JSON contains only `cross7`; new-training normalization contains all seven recording subsets. Merely changing the key is not a way to change the generated object's shape.
+All objects and both stages use the same `shared` normalization profile. It is selected automatically; no object name or normalization key is needed. `--normalization` can specify a saved profile file.
 
 ## Data
 
@@ -69,7 +69,7 @@ python tools/verify_data.py --data-root data
 python run.py train --data-root data
 ```
 
-Images are linked after pixel verification, so no second image copy is needed on the same disk. Use `--copy` only if links are unavailable. [Weights and annotation supplement](https://github.com/DongyuLUO/ControlTac-code/releases/tag/v0.1.0) are private release assets; sign in with an authorized GitHub account to download them. No new 3.12 GB tactile-image archive is required.
+Images are linked after pixel verification, so no second image copy is needed on the same disk. Use `--copy` only if links are unavailable. [Weights and annotation supplement](https://github.com/DongyuLUO/ControlTac/releases/tag/v0.1.0) are private release assets; sign in with an authorized GitHub account to download them. No new 3.12 GB tactile-image archive is required.
 
 To reconstruct from the original local CSV tree:
 

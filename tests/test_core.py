@@ -1,11 +1,23 @@
 import random
 import unittest
+import json
+import tempfile
+from pathlib import Path
 import torch
 from controltac.diffusion import Diffusion
-from controltac.prepare import stratified, grouped, FORCE_QUOTAS, POSE_QUOTAS
+from controltac.prepare import stratified, grouped, FORCE_QUOTAS, POSE_QUOTAS, compute_normalization
 from controltac.runtime import normalize, denormalize
 
 class CoreTests(unittest.TestCase):
+    def test_preparation_preserves_shared_normalization(self):
+        root = Path(__file__).resolve().parents[1]
+        expected = json.loads((root/'examples/normalization.json').read_text())
+        self.assertEqual(set(expected), {'shared'})
+        self.assertEqual(expected, json.loads((root/'splits/normalization.json').read_text()))
+        with tempfile.TemporaryDirectory() as tmp:
+            compute_normalization(Path(tmp)/'no_dataset_needed', Path(tmp))
+            self.assertEqual(expected, json.loads((Path(tmp)/'normalization.json').read_text()))
+
     def test_exact_sampling_and_no_silent_duplicates(self):
         rows = [dict(object='cross7',pose=str(p),image=f'{p}-{i}') for p in range(3) for i in range(4)]
         first = stratified(rows,10,random.Random(42),poses=3)

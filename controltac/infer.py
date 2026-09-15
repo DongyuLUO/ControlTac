@@ -20,7 +20,7 @@ def main():
     p.add_argument('--initial-force', nargs=3, type=float)
     p.add_argument('--target-force', nargs=3, type=float)
     p.add_argument('--normalization', type=Path)
-    p.add_argument('--subset', help='Key in the normalization JSON; selects preprocessing statistics, not a model class condition')
+    p.add_argument('--normalization-key', '--subset', dest='normalization_key', default='shared', help='Normalization profile (default: shared for all objects)')
     p.add_argument('--output', type=Path, default=Path('outputs/generated.png'))
     p.add_argument('--steps', type=int, default=50)
     p.add_argument('--seed', type=int, default=42)
@@ -32,13 +32,13 @@ def main():
     args = p.parse_args()
     if args.example:
         example = read_config(args.example)
-        for k in ['stage','initial_force','target_force','subset']:
+        for k in ['stage','initial_force','target_force']:
             if getattr(args,k) is None:
                 setattr(args,k,example.get(k))
         for k in ['checkpoint','reference','background','mask','normalization','model_config']:
             if getattr(args,k) is None and example.get(k):
                 setattr(args,k,args.example.parent/example[k])
-    for k in ['stage','checkpoint','reference','background','initial_force','target_force','normalization','subset']:
+    for k in ['stage','checkpoint','reference','background','initial_force','target_force','normalization']:
         if getattr(args,k) is None:
             p.error(f'--{k.replace("_","-")} is required (or use --example)')
     if args.stage == 'force_pose' and args.mask is None:
@@ -53,9 +53,9 @@ def main():
         p.error('Model config stage mismatch')
     model = load_weights(create_model(config), args.checkpoint).to(args.device).eval()
     normalization = read_config(args.normalization)
-    if args.subset not in normalization:
-        p.error(f'Unknown normalization key {args.subset!r}; available: {", ".join(normalization)}')
-    stats = normalization[args.subset]
+    if args.normalization_key not in normalization:
+        p.error(f'Unknown normalization key {args.normalization_key!r}; available: {", ".join(normalization)}')
+    stats = normalization[args.normalization_key]
     reference = normalize(read_rgb(args.reference), stats)[None]
     ae = load_autoencoder(args.codec_device, args.ae, args.local_only)
     with torch.inference_mode():

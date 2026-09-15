@@ -22,3 +22,6 @@ controltac-infer = "controltac.infer:main"
 
 [tool.setuptools.packages.find]
 include = ["controltac*"]
+
+[tool.setuptools.package-data]
+controltac = ["normalization.json"]

@@ -20,7 +20,7 @@ def main():
         state = obj.get('model_state_dict', obj)
         if not all(isinstance(v, torch.Tensor) for v in state.values()):
             raise ValueError('Expected a tensor-only state_dict')
-        destination = args.output / original
+        destination = args.output / (name + '.pth')
         if destination.resolve() == source.resolve():
             raise ValueError('Refusing to overwrite original checkpoint')
         torch.save(state, destination)
