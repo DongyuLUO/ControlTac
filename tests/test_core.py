@@ -1,27 +1,20 @@
-import random
 import unittest
 import json
-import tempfile
 from pathlib import Path
 import torch
 import numpy as np
 from controltac.diffusion import Diffusion
-from controltac.prepare import stratified, grouped, FORCE_QUOTAS, POSE_QUOTAS, compute_normalization
+from controltac.data import read_rows
 from controltac.runtime import normalize, denormalize
 
 class CoreTests(unittest.TestCase):
     def test_examples_force_range_and_pose_conditions(self):
         examples = Path(__file__).resolve().parents[1]/'examples'
-        provenance = json.loads((examples/'provenance.json').read_text())['examples']
         for stage in ['force', 'force_pose']:
             config = json.loads((examples/f'{stage}.json').read_text())
-            pair = provenance[stage]
             for key, source in [('initial_force','reference'),('target_force','target')]:
-                self.assertEqual(config[key], pair[source]['force'])
                 self.assertTrue(-10 <= config[key][2] <= -1)
             self.assertNotEqual(config['initial_force'], config['target_force'])
-            same_pose = pair['reference']['contact_pose'] == pair['target']['contact_pose']
-            self.assertEqual(same_pose, stage == 'force')
             masks = [np.load(examples/f'assets/{stage}/{name}_mask.npy',allow_pickle=False) for name in ['reference','target']]
             self.assertEqual(np.array_equal(*masks), stage == 'force')
             if stage == 'force_pose':
@@ -29,27 +22,21 @@ class CoreTests(unittest.TestCase):
             else:
                 self.assertNotIn('mask', config)
 
-    def test_preparation_preserves_shared_normalization(self):
+    def test_distributed_manifests_and_normalization(self):
         root = Path(__file__).resolve().parents[1]
-        expected = json.loads((root/'examples/normalization.json').read_text())
-        self.assertEqual(set(expected), {'shared'})
-        self.assertEqual(expected, json.loads((root/'splits/normalization.json').read_text()))
-        with tempfile.TemporaryDirectory() as tmp:
-            compute_normalization(Path(tmp)/'no_dataset_needed', Path(tmp))
-            self.assertEqual(expected, json.loads((Path(tmp)/'normalization.json').read_text()))
-
-    def test_exact_sampling_and_no_silent_duplicates(self):
-        rows = [dict(object='cross7',pose=str(p),image=f'{p}-{i}') for p in range(3) for i in range(4)]
-        first = stratified(rows,10,random.Random(42),poses=3)
-        self.assertEqual(len(first),10)
-        self.assertEqual(len(grouped(first)),3)
-        self.assertEqual(len({r['image'] for r in first}),10)
-        self.assertEqual(first,stratified(rows,10,random.Random(42),poses=3))
-        with self.assertRaises(ValueError):
-            stratified(rows,13,random.Random(42))
-        self.assertEqual(len(stratified(rows,13,random.Random(42),allow_repeat=True)),13)
-        self.assertEqual(sum(FORCE_QUOTAS),20000)
-        self.assertEqual(sum(POSE_QUOTAS),7000)
+        expected = json.loads((root/'controltac/normalization.json').read_text())
+        for name in ['examples/normalization.json','splits/normalization.json']:
+            self.assertEqual(expected, json.loads((root/name).read_text()))
+        force = read_rows(root/'splits/force_train.csv')
+        pose = read_rows(root/'splits/force_pose_train.csv')
+        self.assertEqual(len(force), 20000)
+        self.assertEqual(len(pose), 7000)
+        self.assertEqual(len({row['image'] for row in pose}), 7000)
+        self.assertEqual(set(force[0]), {'object','image','force','reference_image'})
+        self.assertEqual(set(pose[0]), {'object','image','force','mask'})
+        image_objects = {row['image']:row['object'] for row in force}
+        for row in force:
+            self.assertEqual(image_objects[row['reference_image']],row['object'])
 
     def test_normalization_roundtrip_residual(self):
         x = torch.rand(3,256,320)

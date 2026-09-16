@@ -4,7 +4,7 @@ Force and contact-pose controlled tactile image generation from a reference tact
 
 [Paper](https://arxiv.org/abs/2505.20498) · [FeelAnyForce dataset](https://huggingface.co/datasets/amirsh1376/FeelAnyForce)
 
-This is a reconstructed release of the original experiment code. The supplied model tensors are unchanged. The reconstructed data splits and corrected training loop are new; they do not establish a reproduction of the paper's reported metrics.
+This repository provides pretrained models, two inference examples, and a two-stage training pipeline.
 
 ## Install
 
@@ -39,7 +39,7 @@ The examples use measured Cross samples with both initial and target Fz within *
 | Force control | [-0.068, 0.031, -2.433] | [-0.180, 0.285, -8.638] | Unchanged |
 | Force and pose control | [-0.068, 0.031, -2.433] | [0.022, 0.480, -7.957] | Position shifts by 4.79 mm; target mask changes |
 
-Each example has its own reference and measured target residual image under `examples/assets/`. Reference masks are included for comparison; force-only inference does not consume a mask. Source annotations and exact contact poses are recorded in `examples/provenance.json`.
+Each example has its own reference and measured target residual image under `examples/assets/`. Reference masks are included for comparison; force-only inference does not consume a mask.
 
 For your own inputs:
 
@@ -49,7 +49,7 @@ python -m controltac.infer --stage force_pose --checkpoint checkpoints/force_pos
 
 The reference must be a **background-subtracted image stored with a 127 gray offset**, matching the original `tactile_nobg` files. RGB inputs are resized to 320×256. Forces are signed `[Fx, Fy, Fz]` in newtons; the model receives `target − initial`. A mask is a 2D NumPy array or grayscale image in the same sensor coordinates. It is encoded independently of image normalization.
 
-When using newly trained weights, also pass `--model-config runs/force_pose/config.json --normalization runs/force_pose/normalization.json`. This selects the corrected backbone path instead of the compatibility path required by the historical CN checkpoint.
+When using newly trained weights, also pass `--model-config runs/force_pose/config.json --normalization runs/force_pose/normalization.json`. This selects the corrected backbone path instead of the compatibility path required by the provided force-and-pose checkpoint.
 
 All objects and both stages use the same `shared` normalization profile. It is selected automatically; no object name or normalization key is needed. `--normalization` can specify a saved profile file.
 
@@ -77,15 +77,7 @@ python tools/verify_data.py --data-root data
 python run.py train --data-root data
 ```
 
-Images are linked after pixel verification, so no second image copy is needed on the same disk. Use `--copy` only if links are unavailable. [Weights and annotation supplement](https://github.com/DongyuLUO/ControlTac/releases/tag/v0.1.0) are private release assets; sign in with an authorized GitHub account to download them. No new 3.12 GB tactile-image archive is required.
-
-To reconstruct from the original local CSV tree:
-
-```bash
-python -m controltac.prepare --data-root /path/to/source_data
-```
-
-This fails clearly if there are too few unique images. Only if repeated **force** samples are intended, explicitly add `--allow-repeated-force-samples`. The supplied Thin Cylinder source allocation requires this option for the requested quota. All repetitions are deterministic and recorded; masks and force labels are never invented.
+Images are linked after pixel verification, so no second image copy is needed on the same disk. Use `--copy` only if links are unavailable. [Weights and annotation supplement](https://github.com/DongyuLUO/ControlTac/releases/tag/v0.1.0) are private release assets; sign in with an authorized GitHub account to download them.
 
 ## Train
 
@@ -105,25 +97,25 @@ python -m controltac.train --config configs/force_pose.json --data-root /path/to
 
 Both stages default to 75,000 optimizer steps, batch size 4, AdamW, cosine annealing, and `0.5 L1 + 0.5 MSE` noise-prediction loss. Learning rates are `1e-4 → 1e-5` for force and `1e-5 → 1e-6` for pose.
 
-The four input images form 16 reference/target pairs, as in the surviving training code. Force batches share a contact pose; pose batches share an object. Pair gradients accumulate in microbatches to limit memory. Each optimizer step still includes all 16 pairs. Set `--pair-microbatch 16` for maximum parallelism when memory permits.
+The four input images form 16 reference/target pairs. Force batches share a contact pose; pose batches share an object. Pair gradients accumulate in microbatches to limit memory. Each optimizer step still includes all 16 pairs. Set `--pair-microbatch 16` for maximum parallelism when memory permits.
 
 Neither model takes a numeric pose vector. Stage two uses the target contact mask. The force-only loader groups images by `reference_image` to form pairs at the same contact location. Training manifests contain only object names, image paths, forces, and the reference image or target mask.
 
 The codec stays frozen. Stage two freezes the backbone and trains the six copied ControlNet blocks plus the mask projection. The default output is a tensor-only `model.pth`, accompanied by `config.json`, `normalization.json`, and `metrics.jsonl`. Add `--save-training-state` to keep a separate `training_state.pt` with optimizer, scheduler, scaler, and RNG state. Resume with `--resume path/to/training_state.pt` and the same configuration.
 
-Use `--max-steps 1 --device cpu --local-only` for a smoke run. A full 75,000-step run was **not** performed during recovery. The paper used an RTX A5000; the local 4 GB RTX 2050 was used for inference, and CPU for training smoke tests.
+Use `--max-steps 1 --device cpu --local-only` for a quick training check. The provided training pipeline has been tested with single optimizer steps; full training and paper benchmark metrics have not been rerun for this release.
 
 ## Layout
 
 ```text
-controltac/       models, diffusion, data preparation, training, inference
-configs/         two paper-aligned training configurations
-examples/        two self-contained examples and provenance
+controltac/       models, diffusion, manifest loading, training, inference
+configs/         training configurations
+examples/        two self-contained inference examples
 splits/          minimal training and evaluation manifests
 checkpoints/     tensor-only weights and SHA-256 manifest
-tools/           verification, export, and release asset packaging
-tests/           sampling, normalization, and DDIM regression tests
-docs/            recovery decisions and data release instructions
+tools/           FeelAnyForce linking and data verification
+tests/           data, example, normalization, and DDIM tests
+docs/            data download and setup instructions
 ```
 
 ```bash

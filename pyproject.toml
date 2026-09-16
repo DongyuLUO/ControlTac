@@ -16,7 +16,6 @@ dependencies = [
 ]
 
 [project.scripts]
-controltac-prepare = "controltac.prepare:main"
 controltac-train = "controltac.train:main"
 controltac-infer = "controltac.infer:main"
 

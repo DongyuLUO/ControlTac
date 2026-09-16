@@ -16,4 +16,4 @@ python run.py infer --stage force
 python run.py infer --stage force_pose
 ```
 
-Generated images are saved as `outputs/force.png` and `outputs/force_pose.png`. Full signed force vectors are in the configuration files; measured source annotations and contact poses are in [provenance.json](provenance.json). Both examples use [normalization.json](normalization.json).
+Generated images are saved as `outputs/force.png` and `outputs/force_pose.png`. Full signed force vectors are in the configuration files. Both examples use [normalization.json](normalization.json).

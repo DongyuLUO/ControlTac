@@ -6,7 +6,7 @@ from collections import defaultdict
 from pathlib import Path
 import torch
 from .diffusion import Diffusion
-from .prepare import read_rows
+from .data import read_rows
 from .runtime import (read_config, create_model, load_weights, load_autoencoder,
                       read_rgb, read_mask, normalize, LATENT_SCALE, AE_ID)
 
