@@ -6,6 +6,8 @@ Force and contact-pose controlled tactile image generation from a reference tact
 
 This repository provides pretrained models, two inference examples, and a two-stage training pipeline.
 
+The project website is maintained separately on the [gh-pages branch](https://github.com/DongyuLUO/ControlTac/tree/gh-pages). The main branch contains the training and inference distribution.
+
 ## Install
 
 Use Python 3.11 and install a matching PyTorch/torchvision build for your CUDA version, then:
