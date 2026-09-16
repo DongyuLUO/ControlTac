@@ -17,7 +17,7 @@ def main():
         with (args.splits/f'{name}.csv').open(newline='') as f:
             for row in csv.DictReader(f):
                 files.add(row['image'])
-                if row['mask']:
+                if row.get('mask'):
                     files.add(row['mask'])
     root = args.data_root.resolve()
     for name in files:

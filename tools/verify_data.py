@@ -1,37 +1,35 @@
-"""Validate exact counts, file existence, duplicates, and pose leakage."""
+"""Validate training files, sample counts, force vectors and image separation."""
 import argparse
 import csv
 import json
-from collections import Counter
+import math
 from pathlib import Path
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--data-root',type=Path,required=True)
-    p.add_argument('--splits',type=Path,default=Path('splits'))
-    args = p.parse_args()
-    all_rows = {}
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--data-root',type=Path,required=True)
+    parser.add_argument('--splits',type=Path,default=Path('splits'))
+    args=parser.parse_args()
+    data={}
     for name in ['force_train','force_pose_train','validation','test']:
         with (args.splits/f'{name}.csv').open(newline='') as f:
-            rows = list(csv.DictReader(f))
+            reader=csv.DictReader(f)
+            expected={'object','image','force','reference_image' if name=='force_train' else 'mask'}
+            assert set(reader.fieldnames)==expected,(name,reader.fieldnames)
+            rows=list(reader)
         for row in rows:
-            if not (args.data_root/row['image']).is_file():
-                raise FileNotFoundError(row['image'])
-            if name == 'force_pose_train' and not (args.data_root/row['mask']).is_file():
-                raise FileNotFoundError(row['mask'])
-        all_rows[name] = rows
-    assert len(all_rows['force_train']) == 20000
-    pos = all_rows['force_pose_train']
-    assert len(pos) == len({r['image'] for r in pos}) == 7000
-    poses = {(r['object'],r['pose']) for r in pos}
-    assert set(Counter(o for o,p in poses).values()) == {300}
-    train = {(r['object'],r['pose']) for r in all_rows['force_train']+pos}
-    val = {(r['object'],r['pose']) for r in all_rows['validation']}
-    test = {(r['object'],r['pose']) for r in all_rows['test']}
+            vector=json.loads(row['force'])
+            assert len(vector)==3 and all(math.isfinite(x) for x in vector)
+            for field in ['image','reference_image' if name=='force_train' else 'mask']:
+                if field=='mask' and name!='force_pose_train' and not row[field]: continue
+                assert row[field] and (args.data_root/row[field]).is_file(),row[field]
+        data[name]=rows
+    assert len(data['force_train'])==20000
+    assert len(data['force_pose_train'])==len({r['image'] for r in data['force_pose_train']})==7000
+    train={r['image'] for r in data['force_train']+data['force_pose_train']}
+    val={r['image'] for r in data['validation']}
+    test={r['image'] for r in data['test']}
     assert not (train&val or train&test or val&test)
-    print(json.dumps({'valid':True,'counts':{k:len(v) for k,v in all_rows.items()},
-                      'pose_counts':dict(Counter(o for o,p in poses)),
-                      'force_unique_images':len({r['image'] for r in all_rows['force_train']})},indent=2))
+    print(json.dumps({'valid':True,'counts':{k:len(v) for k,v in data.items()}},indent=2))
 
-if __name__ == '__main__':
-    main()
+if __name__=='__main__': main()

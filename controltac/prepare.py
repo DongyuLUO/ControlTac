@@ -2,7 +2,6 @@
 import argparse
 import ast
 import csv
-import hashlib
 import json
 import random
 from collections import defaultdict
@@ -12,7 +11,6 @@ SUBSETS = ['cross7', 'cylinder7', 'cylinder92_1', 'cylinder92_2', 'cylinder142',
 FORCE_QUOTAS = [3334, 3333, 1667, 1667, 3333, 3333, 3333]
 POSE_QUOTAS = [1167, 1167, 583, 583, 1167, 1167, 1166]
 OBJECT_NAMES = {'cross7': 'Cross', 'cylinder7': 'Slim Cylinder', 'cylinder92': 'Thin Cylinder', 'cylinder142': 'Medium Cylinder', 'sphere28': 'Big Sphere', 'triple_cylinder7': 'Triple Cylinder'}
-FIELDS = ['object', 'source_recording', 'image', 'mask', 'pose', 'force', 'source_csv', 'source_row', 'sample_id']
 
 def physical(subset):
     return 'cylinder92' if subset.startswith('cylinder92_') else subset
@@ -36,10 +34,9 @@ def read_source(root, path, subset):
         mask = row.get('depth_align', '').replace('\\', '/')
         if mask and not (root/mask).is_file():
             raise FileNotFoundError(root/mask)
-        rows.append(dict(object=OBJECT_NAMES[physical(subset)], source_recording=subset, image=image, mask=mask,
+        rows.append(dict(object=OBJECT_NAMES[physical(subset)], image=image, mask=mask,
                          pose=canonical_pose(row['indentation_init_pose']),
-                         force=json.dumps(ast.literal_eval(row['FT'])[:3]),
-                         source_csv=path, source_row=i+2, sample_id=''))
+                         force=json.dumps(ast.literal_eval(row['FT'])[:3])))
     return rows
 
 def grouped(rows):
@@ -80,19 +77,24 @@ def stratified(rows, count, rng, poses=None, allow_repeat=False):
             selected.extend(order[:count-len(selected)])
     return [dict(r) for r in selected]
 
-def write_csv(path, rows):
+def write_csv(path, rows, force_pairing=False):
+    fields = ['object', 'image', 'force', 'reference_image'] if force_pairing else ['object', 'image', 'force', 'mask']
+    references = {}
     with Path(path).open('w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDS)
+        writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
-        for i, row in enumerate(rows):
-            writer.writerow({**row, 'sample_id':f'{Path(path).stem}_{i:06d}'})
+        for row in rows:
+            values = {k:row.get(k,'') for k in fields}
+            if force_pairing:
+                values['reference_image'] = row.get('reference_image') or references.setdefault((row['object'],row['pose']),row['image'])
+            writer.writerow(values)
 
 def build(root, output, seed=42, allow_repeat=False):
     rng = random.Random(seed)
     output.mkdir(parents=True, exist_ok=True)
     force, position, val, test = [], [], [], []
     report = {'seed':seed, 'reconstruction':True, 'allow_repeated_force_samples':allow_repeat,
-              'rounding':'Nearest integer allocation across six objects; Thin Cylinder source quotas retained.', 'objects':{}, 'sources':{}}
+              'rounding':'Nearest integer allocation across six objects; Thin Cylinder source quotas retained.', 'objects':{}}
     pools, pose_rows = {}, {}
     for subset in SUBSETS:
         obj = physical(subset)
@@ -103,9 +105,6 @@ def build(root, output, seed=42, allow_repeat=False):
         posefile = base + f'{subset}_train_pos_{200 if subset == "cylinder92_1" else 300}.csv'
         sources = list(dict.fromkeys([primary, full, posefile]))
         loaded = {p:read_source(root,p,subset) for p in sources}
-        for p in sources:
-            with (root/p).open('rb') as f:
-                report['sources'][p] = hashlib.file_digest(f, 'sha256').hexdigest()
         pools[subset] = unique(loaded[primary] + loaded[full])
         pose_rows[subset] = loaded[posefile]
     # Reserve every annotated training pose, including masks not selected this run.
@@ -144,10 +143,9 @@ def build(root, output, seed=42, allow_repeat=False):
     train_keys = set(grouped(force+position))
     assert not (train_keys & holdout_val or train_keys & holdout_test or holdout_val & holdout_test)
     for name, rows in [('force_train',force),('force_pose_train',position),('validation',val),('test',test)]:
-        write_csv(output/f'{name}.csv', rows)
+        write_csv(output/f'{name}.csv', rows, force_pairing=name == 'force_train')
         report[name] = dict(samples=len(rows),unique_images=len(unique(rows)),poses=len(grouped(rows)))
     report['pose_disjoint_train_validation_test'] = True
-    (output/'report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     return report
 
 def compute_normalization(root, output):

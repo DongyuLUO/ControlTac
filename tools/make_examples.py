@@ -32,7 +32,7 @@ candidates.sort(key=lambda item: item[0])
 pose_target = next(row for _,row in candidates if not np.array_equal(reference_mask,np.load(root/row['depth_align'],allow_pickle=False)))
 provenance = {'object':'Cross','force_units':'N','position_units':'m','fz_range':[-10,-1],'examples':{}}
 def record(row):
-    return {'source_csv':source_csv,'source_row':rows.index(row)+2,'image':row['tactile_nobg'],
+    return {'image':row['tactile_nobg'],
             'mask':row['depth_align'],'force':force(row),'contact_pose':pose(row)}
 for stage,target in [('force',force_target),('force_pose',pose_target)]:
     assert force(reference) != force(target)

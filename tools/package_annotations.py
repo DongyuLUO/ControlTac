@@ -18,7 +18,7 @@ def main():
         with (args.splits/f'{name}.csv').open(newline='') as f:
             for row in csv.DictReader(f):
                 images.add(row['image'])
-                if row['mask']:
+                if row.get('mask'):
                     masks.add(row['mask'])
     index = {}
     for i,name in enumerate(sorted(images)):

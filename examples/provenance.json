@@ -9,8 +9,6 @@
   "examples": {
     "force": {
       "reference": {
-        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
-        "source_row": 2,
         "image": "data_all/cross7/tactile_nobg/1713284461456.png",
         "mask": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
         "force": [
@@ -28,8 +26,6 @@
         ]
       },
       "target": {
-        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
-        "source_row": 6,
         "image": "data_all/cross7/tactile_nobg/1713284477321.png",
         "mask": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
         "force": [
@@ -51,8 +47,6 @@
     },
     "force_pose": {
       "reference": {
-        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
-        "source_row": 2,
         "image": "data_all/cross7/tactile_nobg/1713284461456.png",
         "mask": "data_all/cross7/depth_align_cross7/1713284485230_depth_align.npy",
         "force": [
@@ -70,8 +64,6 @@
         ]
       },
       "target": {
-        "source_csv": "data_all/cross7/cross7_train_pos_300.csv",
-        "source_row": 1408,
         "image": "data_all/cross7/tactile_nobg/1713284607054.png",
         "mask": "data_all/cross7/depth_align_cross7/1713284615011_depth_align.npy",
         "force": [

@@ -35,13 +35,13 @@ The adapter is validated against the local extracted `tactile_nobg` tree used to
 
 ## Splits and annotations
 
-Object labels are Cross, Slim Cylinder, Thin Cylinder, Medium Cylinder, Big Sphere, and Triple Cylinder. The CSV `object` field and summary report use these six names. `source_recording` and file paths retain upstream identifiers only for provenance and reproducible sampling; the Thin Cylinder recordings are not separate object classes.
+Object labels are Cross, Slim Cylinder, Thin Cylinder, Medium Cylinder, Big Sphere, and Triple Cylinder. Thin Cylinder is one object.
 
-Use the checked-in split CSVs and `normalization.json` for training. They retain exact sample quotas, image paths, forces, pose identifiers, source CSV and source record indices. Stage one includes 176 explicitly recorded repetitions; stage two contains 7,000 distinct images and six objects with 300 distinct poses each.
+Use the checked-in split CSVs and shared normalization for training. Force-only columns are `object`, `image`, `force`, and `reference_image`; images sharing a reference form same-contact pairs. Force-and-pose columns are `object`, `image`, `force`, and `mask`. Numeric poses and source bookkeeping are not included. Stage one contains 20,000 samples (19,824 unique images); stage two contains 7,000 unique images.
 
 The new validation/test records hold out image, force and pose information. Mask fields can be empty because those poses were excluded from the aligned training masks. Supply independent aligned masks before evaluating mask-conditioned generation on them. New holdouts are not proven unseen data for historical checkpoints.
 
-To reconstruct the selection itself, use `python -m controltac.prepare --data-root /path/to/source_data --allow-repeated-force-samples`. This requires the original author CSV pool, not just the selected supplement. The seed, source hashes and duplicate counts are in `splits/report.json`. Source rows are CSV record indices plus the header, not physical line numbers, because legacy records can contain embedded newlines.
+To regenerate the selection from the original source data, run `python -m controltac.prepare --data-root /path/to/source_data --allow-repeated-force-samples`. The preparation code checks pose counts and split separation in memory before writing training CSVs.
 
 ## Maintainer packaging
 
@@ -51,8 +51,6 @@ Original checkpoint filenames are also unrestricted:
 
 ```bash
 python tools/export_checkpoints.py --force-checkpoint /path/to/original_force_checkpoint.pth --force-pose-checkpoint /path/to/original_force_pose_checkpoint.pth --output checkpoints
-python tools/inspect_weights.py checkpoints/force_control.pth checkpoints/force_pose_control.pth
-python tools/audit_sources.py --source-root /path/to/source_data
 python tools/make_examples.py --source-root /path/to/source_data
 ```
 

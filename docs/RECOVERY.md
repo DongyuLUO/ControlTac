@@ -26,7 +26,7 @@ The original force and force-pose transformer implementations were migrated into
 
 ## Data reconstruction and limits
 
-This is a new deterministic split, not the missing original split. The original source files and their hashes are recorded. Primary CSVs are supplemented from the corresponding full local object CSV when necessary. Thin Cylinder is a single object; original recording identifiers are retained only in source provenance and file paths.
+This is a new deterministic split, not the missing original split. Primary CSVs are supplemented from the corresponding full local object CSV when necessary. Thin Cylinder is a single object; original recording identifiers are retained only in source provenance and file paths.
 
 All annotated candidate training poses are excluded from new validation/test selection. Up to 30 distinct poses per physical object are used for each holdout. Both training stages may share poses and images, which is intentional for sequential training. Train/validation/test pose sets are disjoint. The holdout is newly reconstructed and must not be presented as an unseen evaluation set for the historical checkpoints, whose original training membership is unknown.
 
@@ -40,4 +40,4 @@ The maintainer confirmed that all objects and both stages use the same normaliza
 
 ## Validation
 
-See `docs/validation.json` for machine-readable outcomes. The recovery checks include exact tensor equality, strict checkpoint loading, both real checkpoint inference examples, a full optimizer step with 16 pairs for both stages, and regression tests for normalization, data selection and DDIM's clean terminal step. Complete model training and the paper's benchmark evaluation were not rerun.
+The recovery checks include exact tensor equality, strict checkpoint loading, both real checkpoint inference examples, a full optimizer step with 16 pairs for both stages, and regression tests for normalization, data selection and DDIM's clean terminal step. Complete model training and the paper's benchmark evaluation were not rerun.

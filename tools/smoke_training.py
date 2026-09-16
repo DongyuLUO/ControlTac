@@ -13,11 +13,12 @@ parser.add_argument('--data-root', type=Path, required=True, help='Directory con
 args = parser.parse_args()
 out = repo/'runs/smoke'
 out.mkdir(parents=True,exist_ok=True)
-rows = [r for r in read_rows(repo/'splits/force_pose_train.csv') if r['source_recording']=='cross7']
-write_csv(out/'data.csv',rows[:8])
 for stage in ['force','force_pose']:
+    rows = [r for r in read_rows(repo/f'splits/{stage}_train.csv') if r['object']=='Cross']
+    manifest = out/f'{stage}_data.csv'
+    write_csv(manifest, rows[:8], force_pairing=stage != 'force_pose')
     config = json.loads((repo/f'configs/{stage}.json').read_text())
-    config.update(steps=1,manifest=str(out/'data.csv'),normalization=str(repo/'examples/normalization.json'),output=str(out/stage))
+    config.update(steps=1,manifest=str(manifest),normalization=str(repo/'examples/normalization.json'),output=str(out/stage))
     path = out/f'{stage}.json'
     path.write_text(json.dumps(config))
     command = [sys.executable,'-m','controltac.train','--config',str(path),'--data-root',str(args.data_root.resolve()),

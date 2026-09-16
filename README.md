@@ -2,7 +2,7 @@
 
 Force and contact-pose controlled tactile image generation from a reference tactile image.
 
-[Paper](https://arxiv.org/abs/2505.20498) · [FeelAnyForce dataset](https://huggingface.co/datasets/amirsh1376/FeelAnyForce) · [Recovery notes](docs/RECOVERY.md)
+[Paper](https://arxiv.org/abs/2505.20498) · [FeelAnyForce dataset](https://huggingface.co/datasets/amirsh1376/FeelAnyForce)
 
 This is a reconstructed release of the original experiment code. The supplied model tensors are unchanged. The reconstructed data splits and corrected training loop are new; they do not establish a reproduction of the paper's reported metrics.
 
@@ -67,7 +67,7 @@ The six objects are Cross, Slim Cylinder, Thin Cylinder, Medium Cylinder, Big Sp
 | Triple Cylinder | 3,333 | 1,166 | 300 |
 | **Total** | **20,000** | **7,000** | **1,800** |
 
-These quotas are realized in the checked-in split. Stage one contains **19,824 distinct images and 176 explicitly repeated samples**, to preserve the specified source allocation within Thin Cylinder. See `splits/report.json` for the complete audit. Neither 20,000 nor 7,000 is divisible by six: the integer allocation differs by at most one image between objects. Stage two never repeats an image.
+These quotas are realized in the checked-in split. Stage one contains **19,824 distinct images and 176 explicitly repeated samples**, to preserve the specified source allocation within Thin Cylinder. Neither 20,000 nor 7,000 is divisible by six: the integer allocation differs by at most one image between objects. Stage two never repeats an image.
 
 Data paths are relative to `--data-root`, the directory containing `data_all/`. **Use the background-subtracted images already provided by FeelAnyForce.** We do not re-upload its image dataset. Our small annotation supplement supplies aligned contact masks and a pixel-checksum index for the exact image selection. See [data preparation](docs/DATA.md) for downloading the upstream archive, linking its images, and adding the masks.
 
@@ -103,9 +103,11 @@ python -m controltac.train --config configs/force.json --data-root /path/to/sour
 python -m controltac.train --config configs/force_pose.json --data-root /path/to/source_data --initialize-from runs/force/model.pth
 ```
 
-Both stages default to 75,000 optimizer steps, batch size 4, AdamW, cosine annealing, and `0.5 L1 + 0.5 MSE` noise-prediction loss. Learning rates are `1e-4 → 1e-5` for force and `1e-5 → 1e-6` for pose, following [Appendix A.1](https://arxiv.org/html/2505.20498v1#A1.SS1). Weight decay and clipping are recovered code choices, not specified by the paper.
+Both stages default to 75,000 optimizer steps, batch size 4, AdamW, cosine annealing, and `0.5 L1 + 0.5 MSE` noise-prediction loss. Learning rates are `1e-4 → 1e-5` for force and `1e-5 → 1e-6` for pose.
 
-The four input images form 16 reference/target pairs, as in the surviving training code. Force batches share a contact pose; pose batches share an object recording. Pair gradients accumulate in microbatches to limit memory. Each optimizer step still includes all 16 pairs. Set `--pair-microbatch 16` for maximum parallelism when memory permits.
+The four input images form 16 reference/target pairs, as in the surviving training code. Force batches share a contact pose; pose batches share an object. Pair gradients accumulate in microbatches to limit memory. Each optimizer step still includes all 16 pairs. Set `--pair-microbatch 16` for maximum parallelism when memory permits.
+
+Neither model takes a numeric pose vector. Stage two uses the target contact mask. The force-only loader groups images by `reference_image` to form pairs at the same contact location. Training manifests contain only object names, image paths, forces, and the reference image or target mask.
 
 The codec stays frozen. Stage two freezes the backbone and trains the six copied ControlNet blocks plus the mask projection. The default output is a tensor-only `model.pth`, accompanied by `config.json`, `normalization.json`, and `metrics.jsonl`. Add `--save-training-state` to keep a separate `training_state.pt` with optimizer, scheduler, scaler, and RNG state. Resume with `--resume path/to/training_state.pt` and the same configuration.
 
@@ -117,7 +119,7 @@ Use `--max-steps 1 --device cpu --local-only` for a smoke run. A full 75,000-ste
 controltac/       models, diffusion, data preparation, training, inference
 configs/         two paper-aligned training configurations
 examples/        two self-contained examples and provenance
-splits/          portable manifests and reconstruction report
+splits/          minimal training and evaluation manifests
 checkpoints/     tensor-only weights and SHA-256 manifest
 tools/           verification, export, and release asset packaging
 tests/           sampling, normalization, and DDIM regression tests
